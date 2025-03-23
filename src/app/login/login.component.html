@@ -1,26 +1,25 @@
-<div class="fondodiv">
-    <form (ngSubmit)="login()">
-      <img src="kimsa.png" alt="Logo">
-  
-      <h1>Login</h1>
-  
-      <div>
-        <h2>Usuario</h2>
-        <label>
-          <i class="fa-solid fa-user"></i>
-          <input type="text" [(ngModel)]="usuario" name="usuario" placeholder="Ingrese su usuario" required>
-        </label>
+<div class="login-container">
+  <form (ngSubmit)="login()" class="login-form">
+    <img src="kimsa.png" alt="Logo" class="logo">
+    
+    <h1>Iniciar Sesión</h1>
+
+    <div class="input-group">
+      <label for="usuario">Usuario</label>
+      <div class="input-wrapper">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" [(ngModel)]="usuario" name="usuario" placeholder="Ingrese su usuario" required>
       </div>
-  
-      <div>
-        <h2>Contraseña</h2>
-        <label>
-          <i class="fa-solid fa-lock"></i>
-          <input type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="Ingrese su contraseña" required>
-        </label>
+    </div>
+
+    <div class="input-group">
+      <label for="contrasena">Contraseña</label>
+      <div class="input-wrapper">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="Ingrese su contraseña" required>
       </div>
-  
-      <button type="submit" id="button">Login</button>
-      </form>
-  </div>
-  
+    </div>
+
+    <button type="submit" class="login-btn">Login</button>
+  </form>
+</div>
