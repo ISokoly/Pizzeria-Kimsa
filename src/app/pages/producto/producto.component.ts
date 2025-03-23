@@ -50,6 +50,8 @@ export class ProductoComponent implements OnInit {
   cancelEditProducto(): void {
     this.selectedProducto = null;
     this.resetForm();
+    this.mostrarFormularioProducto = false;
+    document.body.style.overflow = 'auto'; // Restaura el scrol
   }
 
   loadProductos(): void {
@@ -97,11 +99,13 @@ export class ProductoComponent implements OnInit {
         this.resetForm();
       });
     }
+    this.mostrarFormularioProducto = false;
   }
 
   editProducto(producto: any): void {
     this.selectedProducto = producto;
     this.formData = { ...producto };
+    this.mostrarFormularioProducto = true;
   }
 
   deleteProducto(id: number): void {

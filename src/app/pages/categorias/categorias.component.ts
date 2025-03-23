@@ -16,6 +16,8 @@ export class CategoriasComponent implements OnInit {
   cancelEditCategoria() {
     this.selectedCategoria = null;
     this.formData = { nombre: '',  descripcion: '', imagen: ''}; // Restablecer formulario
+    this.mostrarFormulario = false;
+    document.body.style.overflow = 'auto';
   }
 
   categorias: any[] = [];
@@ -62,11 +64,13 @@ export class CategoriasComponent implements OnInit {
         this.resetForm();
       });
     }
+    this.mostrarFormulario = false;
   }
 
   editCategoria(categoria: any): void {
     this.selectedCategoria = categoria;
     this.formData = { ...categoria };
+    this.mostrarFormulario = true;
   }
 
   deleteCategoria(id: number): void {
