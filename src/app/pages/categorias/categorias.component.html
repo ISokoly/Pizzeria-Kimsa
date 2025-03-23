@@ -25,47 +25,62 @@
       </div>
     </div>
   </div>
+</div>
+  <button class="create-btn" (click)="abrirFormulario()">Crear Nueva Categoría</button>
 
-  <!-- Formulario para crear/editar categorías -->
+  <!-- 📌 Formulario modal solo aparece cuando `mostrarFormulario` es true -->
+  <div *ngIf="mostrarFormulario" class="overlay" (click)="cerrarFormulario()"></div>
+  
+  <div *ngIf="mostrarFormulario" class="form-modal">
   <div class="form-container">
     <h2 class="form-title">
       {{ selectedCategoria ? 'Editar Categoría' : 'Crear Categoría' }}
     </h2>
-    <form (ngSubmit)="saveCategoria()" class="category-form" enctype="multipart/form-data">
+  
+    <form (ngSubmit)="saveCategoria()" class="form">
       <input 
         type="text" 
         [(ngModel)]="formData.nombre" 
         name="nombre" 
         placeholder="Nombre de la categoría" 
         required
-        class="input-field"
+        class="form-input"
       >
-      <input 
-        type="text" 
+  
+      <textarea 
         [(ngModel)]="formData.descripcion" 
         name="descripcion" 
-        placeholder="Descripción de la categoría" 
+        placeholder="Descripción" 
         required
-        class="input-field"
-      >
-      <input 
-        type="file" 
-        (change)="onFileSelected($event)"
-        accept="image/*"
-        class="input-field"
-      >
+        class="form-input"
+      ></textarea>
+  
+      <div class="price-container">
+        <label for="imagen" class="label-text">Imagen:</label>
+        <input 
+          type="file" 
+          (change)="onFileSelected($event)"
+          accept="image/*"
+          class="form-input"
+        >    
+      </div>
+  
       <button type="submit" class="submit-btn">
         {{ selectedCategoria ? 'Actualizar' : 'Crear' }}
       </button>
+  
       <button 
-        *ngIf="selectedCategoria"
+        *ngIf="selectedCategoria" 
         type="button" 
         (click)="cancelEditCategoria()" 
         class="cancel-btn"
       >
         Cancelar
       </button>
+  
+      <p *ngIf="!selectedCategoria">No hay categoría seleccionada.</p>
     </form>
   </div>
-</div>
+  
+  </div>
 <router-outlet></router-outlet>

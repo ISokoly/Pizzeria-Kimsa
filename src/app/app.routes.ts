@@ -15,7 +15,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'categoria', pathMatch: 'full' },
       { path: 'categoria', component: CategoriasComponent },
-      { path: 'producto/:nombreCategoria', component: ProductoComponent },
+      { path: 'producto/:nombreCategoria', component: ProductoComponent }
     ]
   },
   {

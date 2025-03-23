@@ -13,8 +13,6 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
   styleUrls: ['./categorias.component.scss']
 })
 export class CategoriasComponent implements OnInit {
-  previewImage: string = '';
-
   cancelEditCategoria() {
     this.selectedCategoria = null;
     this.formData = { nombre: '',  descripcion: '', imagen: ''}; // Restablecer formulario
@@ -40,7 +38,6 @@ export class CategoriasComponent implements OnInit {
     this.apiService.getCategorias().subscribe(data => {
       this.categorias = data;
     });
-
   }
   
   onFileSelected(event: any) {
@@ -82,5 +79,19 @@ export class CategoriasComponent implements OnInit {
     this.formData = { nombre: '',  descripcion: '', imagen: ''};
     this.selectedCategoria = null;
     this.imagePreview = null;
+  }
+
+  mostrarFormulario = false; // Estado para mostrar u ocultar el formulario
+
+  abrirFormulario(categoria: any = null) {
+    this.selectedCategoria = categoria;
+    this.mostrarFormulario = true;
+    document.body.style.overflow = 'hidden'; // Bloquea el scroll del fondo
+  }
+
+  cerrarFormulario() {
+    this.selectedCategoria = null;
+    this.mostrarFormulario = false;
+    document.body.style.overflow = 'auto'; // Restaura el scroll
   }
 }

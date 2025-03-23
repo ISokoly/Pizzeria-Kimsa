@@ -29,6 +29,8 @@ export class ApiService {
 
   // Productos
   getProductos(): Observable<any> {
+    this.http.get(`${this.apiUrl}/productos`).subscribe(data => console.log(data));
+
     return this.http.get(`${this.apiUrl}/productos`);
   }
 
@@ -54,28 +56,24 @@ export class ApiService {
     return this.http.post<{ filePath: string }>(`${this.apiUrl}/upload`, formData);
   }
 
-    // Usuarios
-    getUsuarios(): Observable<any> {
-      return this.http.get(`${this.apiUrl}`);
-    }
-
-    getUsuarioById(id: number): Observable<any> {
-      return this.http.get(`${this.apiUrl}/${id}`);
-    }
+  // Usuarios
+  getUsuarios(): Observable<any> {
+    return this.http.get(`${this.apiUrl}`);
+  }
+  getUsuarioById(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+  createUsuario(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, data);
+  }
+  updateUsuario(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, data);
+  }
+  deleteUsuario(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
   
-    createUsuario(data: any): Observable<any> {
-      return this.http.post(`${this.apiUrl}`, data);
-    }
-  
-    updateUsuario(id: number, data: any): Observable<any> {
-      return this.http.put(`${this.apiUrl}/${id}`, data);
-    }
-  
-    deleteUsuario(id: number): Observable<any> {
-      return this.http.delete(`${this.apiUrl}/${id}`);
-    }
-
-    login(usuario: string, contrasena: string): Observable<any> {
-      return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena });
-    }
+  login(usuario: string, contrasena: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena });
+  }
 }

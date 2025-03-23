@@ -1,3 +1,30 @@
+<div class="products-container">
+  <h2 class="title">{{ nombreCategoria }}</h2>
+
+  <div class="products-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
+    <div class="product-item" *ngFor="let producto of productos">
+      <h3 class="product-name">
+        {{ producto.nombre }}
+      </h3>
+      @if (producto.imagen) {
+        <img [src]="producto.imagen" alt="Imagen del producto" width="300" class="preview-img">
+      }
+      <p class="product-description">
+        {{ producto.descripcion }} - ${{ producto.precio }}
+      </p>
+      <div class="actions">
+        <button (click)="editProducto(producto)" class="edit-btn">Editar</button>
+        <button (click)="deleteProducto(producto.id)" class="delete-btn">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<button class="create-btn" (click)="abrirFormularioProducto()">Crear Nuevo Producto</button>
+
+<div *ngIf="mostrarFormularioProducto" class="overlay" (click)="cerrarFormularioProducto()"></div>
+
+<div *ngIf="mostrarFormularioProducto" class="form-modal">
 <div class="form-container">
   <h2 class="form-title">Productos</h2>
   
@@ -43,6 +70,15 @@
       >
     </div>
 
+    <div class="price-container">
+      <label for="imagen" class="label-text">Imagen:</label>
+      <input 
+        type="file" 
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        class="input-field">    
+    </div>
+
     <button type="submit" class="submit-btn">
       {{ selectedProducto ? 'Actualizar' : 'Crear' }}
     </button>
@@ -57,29 +93,5 @@
     </button>
 
     <p *ngIf="!selectedProducto">No hay producto seleccionado.</p>
-
   </form>
-
-  <ul class="product-list">
-    <li *ngFor="let producto of productos" class="product-item">
-      <span class="product-details">
-        {{ producto.nombre }} - {{ producto.descripcion }} - ${{ producto.precio }}
-      </span>
-      <div class="product-actions">
-        <button 
-          (click)="editProducto(producto)" 
-          class="edit-btn"
-        >
-          Editar
-        </button>
-        <button 
-          (click)="deleteProducto(producto.id)" 
-          class="delete-btn"
-        >
-          Eliminar
-        </button>
-      </div>
-    </li>
-  </ul>
-
-</div>
+</div></div>

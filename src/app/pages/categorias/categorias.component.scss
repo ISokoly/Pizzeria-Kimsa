@@ -1,87 +1,207 @@
+$color-primary: #a8d5ba;
+$color-secondary: #86c59d;
+$color-accent: #4b9b69;
+$color-hover: #3d8057;
+$color-danger: #e53e3e;
+$color-text: #2c3e2c;
+$color-border: #6ea989;
+$color-light: #f9f9f9;
+
 .admin-panel {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // 📌 4 columnas en cada fila
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 20px;
   align-items: start;
 }
 
-// 📌 Estilos para el formulario (ocupa 2 columnas)
-.form-container {
-  grid-column: span 2; // 📌 Hace que el formulario ocupe 2 columnas
-  padding: 20px;
-  border-radius: 5px;
-  background-color: #f4f4f4;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+// 🎨 Botón de Crear Categoría
+.create-btn {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: $color-accent;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
 
-  .form-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #036636;
-  }
-
-  .category-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .input-field {
-    width: 100%; // 📌 Se asegura de que no sobresalga
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-
-  .submit-btn, .cancel-btn {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .submit-btn {
-    background-color: #4caf50;
-    color: white;
-  }
-
-  .cancel-btn {
-    background-color: #d32f2f;
-    color: white;
+  &:hover {
+    background-color: $color-hover;
+    transform: scale(1.05);
   }
 }
 
-// 📌 Estilos para la lista de productos
+// 📌 Fondo oscuro para bloquear el fondo
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+// 📌 Formulario centrado en pantalla
+.form-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+// 📌 Animación para el formulario
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.form-container {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid $color-border;
+
+  .form-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: $color-text;
+    border-bottom: 2px solid $color-border;
+    padding-bottom: 0.5rem;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 0.375rem;
+      background-color: #f0f0f0;
+      border: 1px solid $color-border;
+      outline: none;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: $color-accent;
+        box-shadow: 0 0 0 2px rgba($color-accent, 0.5);
+      }
+    }
+
+    textarea.form-input {
+      height: 6rem;
+      resize: none;
+    }
+  }
+
+  .price-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .label-text {
+      font-weight: bold;
+      color: $color-text;
+    }
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+
+  .submit-btn {
+    background-color: $color-accent;
+    color: white;
+
+    &:hover {
+      background-color: $color-hover;
+    }
+  }
+
+  .cancel-btn {
+    background-color: gray;
+    color: white;
+
+    &:hover {
+      background-color: darkgray;
+    }
+  }
+}
+
+// 📋 Lista de productos y categorías
 .products-container {
-  grid-column: span 4; // 📌 La lista de productos ocupa todo el ancho
+  grid-column: span 4;
 
   .title {
-    color: #036636;
+    color: $color-text;
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid $color-border;
+    padding-bottom: 10px;
   }
 
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); // 📌 4 columnas
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
 
   .product-item {
-    background-color: #fff;
-    padding: 10px;
+    background-color: $color-light;
+    padding: 15px;
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid $color-border;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.02);
+    }
 
     .category-name {
       font-size: 18px;
       font-weight: bold;
+      cursor: pointer;
+      color: $color-text;
+      transition: 0.3s;
+
+      &:hover {
+        color: $color-accent;
+      }
     }
 
     .preview-img {
@@ -97,20 +217,30 @@
       gap: 10px;
 
       .edit-btn, .delete-btn {
-        padding: 5px 10px;
+        padding: 8px 12px;
         border: none;
         cursor: pointer;
         border-radius: 5px;
+        font-size: 14px;
+        transition: 0.3s;
       }
 
       .edit-btn {
-        background-color: #4caf50;
+        background-color: $color-accent;
         color: white;
+
+        &:hover {
+          background-color: $color-hover;
+        }
       }
 
       .delete-btn {
-        background-color: #d32f2f;
+        background-color: $color-danger;
         color: white;
+
+        &:hover {
+          background-color: darkred;
+        }
       }
     }
   }

@@ -14,15 +14,20 @@ import { ApiService } from '../../api.service';
 export class ProductoComponent implements OnInit {
   productos: any[] = [];
   categorias: any[] = [];
-  formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '' };
+  formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '', imagen: ''};
   selectedProducto: any = null;
   nombreCategoria: string = '';
+  imagePreview: string | null = null;
+  selectedCategoriaNombre: string = 'Productos de la pizzería';
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
+      
       const nombreCategoria = params.get('nombreCategoria');
+      console.log('Nombre de categoría obtenido del route:', nombreCategoria);
+
       if (nombreCategoria) {
         this.nombreCategoria = nombreCategoria;
         this.loadProductos();
@@ -30,6 +35,16 @@ export class ProductoComponent implements OnInit {
     });
 
     this.loadCategorias();
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.apiService.uploadImage(file).subscribe(response => {
+        this.formData.imagen = response.filePath;
+        this.imagePreview = `data:image/png;base64,${response.filePath}`;
+      });
+    }
   }
 
   cancelEditProducto(): void {
@@ -64,7 +79,7 @@ export class ProductoComponent implements OnInit {
   }
 
   saveProducto(): void {
-    if (!this.formData.nombre || !this.formData.descripcion || !this.formData.precio || !this.formData.id_categoria) {
+    if (!this.formData.nombre || !this.formData.descripcion || !this.formData.precio || !this.formData.id_categoria || !this.formData.imagen) {
       console.warn('Todos los campos son obligatorios');
       return;
     }
@@ -97,7 +112,22 @@ export class ProductoComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '' };
+    this.formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '', imagen: '' };
     this.selectedProducto = null;
+    this.imagePreview = null;
+  }
+
+  mostrarFormularioProducto = false; // Estado para mostrar u ocultar el formulario
+
+  abrirFormularioProducto(producto: any = null) {
+    this.selectedProducto = producto;
+    this.mostrarFormularioProducto = true;
+    document.body.style.overflow = 'hidden'; // Bloquea el scroll del fondo
+  }
+  
+  cerrarFormularioProducto() {
+    this.selectedProducto = null;
+    this.mostrarFormularioProducto = false;
+    document.body.style.overflow = 'auto'; // Restaura el scroll
   }
 }
