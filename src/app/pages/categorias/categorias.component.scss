@@ -1,0 +1,117 @@
+.admin-panel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); // 📌 4 columnas en cada fila
+  gap: 20px;
+  padding: 20px;
+  align-items: start;
+}
+
+// 📌 Estilos para el formulario (ocupa 2 columnas)
+.form-container {
+  grid-column: span 2; // 📌 Hace que el formulario ocupe 2 columnas
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .form-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #036636;
+  }
+
+  .category-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-field {
+    width: 100%; // 📌 Se asegura de que no sobresalga
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  .submit-btn, .cancel-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .submit-btn {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .cancel-btn {
+    background-color: #d32f2f;
+    color: white;
+  }
+}
+
+// 📌 Estilos para la lista de productos
+.products-container {
+  grid-column: span 4; // 📌 La lista de productos ocupa todo el ancho
+
+  .title {
+    color: #036636;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); // 📌 4 columnas
+    gap: 20px;
+  }
+
+  .product-item {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    .category-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+
+      .edit-btn, .delete-btn {
+        padding: 5px 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      .edit-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .delete-btn {
+        background-color: #d32f2f;
+        color: white;
+      }
+    }
+  }
+}

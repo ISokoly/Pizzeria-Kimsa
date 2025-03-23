@@ -1,0 +1,71 @@
+<div class="admin-panel">
+
+  <!-- Lista de categorías con imágenes -->
+  <div class="products-container">
+    <h2 class="title">Productos de la pizzería</h2>
+
+    <div class="products-grid">
+      <div class="product-item" *ngFor="let categoria of categorias">
+        <h3 class="category-name" (click)="verProductos(categoria.nombre)" style="cursor: pointer;">
+          {{ categoria.nombre }}
+        </h3>
+        @if (categoria.imagen) {
+          <img 
+            [src]="categoria.imagen" 
+            width="300" 
+            class="preview-img" 
+            (click)="verProductos(categoria.nombre)"
+            style="cursor: pointer;"
+          >
+        }
+        <div class="actions">
+          <button (click)="editCategoria(categoria)" class="edit-btn">Editar</button>
+          <button (click)="deleteCategoria(categoria.id)" class="delete-btn">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario para crear/editar categorías -->
+  <div class="form-container">
+    <h2 class="form-title">
+      {{ selectedCategoria ? 'Editar Categoría' : 'Crear Categoría' }}
+    </h2>
+    <form (ngSubmit)="saveCategoria()" class="category-form" enctype="multipart/form-data">
+      <input 
+        type="text" 
+        [(ngModel)]="formData.nombre" 
+        name="nombre" 
+        placeholder="Nombre de la categoría" 
+        required
+        class="input-field"
+      >
+      <input 
+        type="text" 
+        [(ngModel)]="formData.descripcion" 
+        name="descripcion" 
+        placeholder="Descripción de la categoría" 
+        required
+        class="input-field"
+      >
+      <input 
+        type="file" 
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        class="input-field"
+      >
+      <button type="submit" class="submit-btn">
+        {{ selectedCategoria ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button 
+        *ngIf="selectedCategoria"
+        type="button" 
+        (click)="cancelEditCategoria()" 
+        class="cancel-btn"
+      >
+        Cancelar
+      </button>
+    </form>
+  </div>
+</div>
+<router-outlet></router-outlet>

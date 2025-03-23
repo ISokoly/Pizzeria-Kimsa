@@ -1,0 +1,26 @@
+<div class="fondodiv">
+    <form (ngSubmit)="login()">
+      <img src="kimsa.png" alt="Logo">
+  
+      <h1>Login</h1>
+  
+      <div>
+        <h2>Usuario</h2>
+        <label>
+          <i class="fa-solid fa-user"></i>
+          <input type="text" [(ngModel)]="usuario" name="usuario" placeholder="Ingrese su usuario" required>
+        </label>
+      </div>
+  
+      <div>
+        <h2>Contraseña</h2>
+        <label>
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="Ingrese su contraseña" required>
+        </label>
+      </div>
+  
+      <button type="submit" id="button">Login</button>
+      </form>
+  </div>
+  

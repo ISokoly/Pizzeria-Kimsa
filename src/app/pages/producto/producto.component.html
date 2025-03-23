@@ -1,0 +1,85 @@
+<div class="form-container">
+  <h2 class="form-title">Productos</h2>
+  
+  <form (ngSubmit)="saveProducto()" class="form">
+    <input 
+      type="text" 
+      [(ngModel)]="formData.nombre" 
+      name="nombre" 
+      placeholder="Nombre del producto" 
+      required
+      class="form-input"
+    >
+
+    <textarea 
+      [(ngModel)]="formData.descripcion" 
+      name="descripcion" 
+      placeholder="Descripción" 
+      required
+      class="form-input"
+    ></textarea>
+
+    <select 
+      [(ngModel)]="formData.id_categoria" 
+      name="id_categoria" 
+      required
+      class="form-select"
+    >
+      <option value="" disabled selected>Seleccione una categoría</option>
+      <option *ngFor="let categoria of categorias" [ngValue]="categoria.id">
+        {{ categoria.nombre }}
+      </option>
+    </select>
+
+    <div class="price-container">
+      <label for="precio" class="label-text">Precio:</label>
+      <input 
+        id="precio"
+        type="number" 
+        [(ngModel)]="formData.precio" 
+        name="precio" 
+        required
+        class="form-input w-full"
+      >
+    </div>
+
+    <button type="submit" class="submit-btn">
+      {{ selectedProducto ? 'Actualizar' : 'Crear' }}
+    </button>
+
+    <button 
+      *ngIf="selectedProducto" 
+      type="button" 
+      (click)="cancelEditProducto()" 
+      class="cancel-btn"
+    >
+      Cancelar
+    </button>
+
+    <p *ngIf="!selectedProducto">No hay producto seleccionado.</p>
+
+  </form>
+
+  <ul class="product-list">
+    <li *ngFor="let producto of productos" class="product-item">
+      <span class="product-details">
+        {{ producto.nombre }} - {{ producto.descripcion }} - ${{ producto.precio }}
+      </span>
+      <div class="product-actions">
+        <button 
+          (click)="editProducto(producto)" 
+          class="edit-btn"
+        >
+          Editar
+        </button>
+        <button 
+          (click)="deleteProducto(producto.id)" 
+          class="delete-btn"
+        >
+          Eliminar
+        </button>
+      </div>
+    </li>
+  </ul>
+
+</div>

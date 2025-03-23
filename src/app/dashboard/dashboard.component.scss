@@ -1,0 +1,36 @@
+mat-toolbar {
+    position: relative;
+    z-index: 5;
+    box-shadow: var(--mat-sys-level3);
+    background: #097d4c;
+  }
+  button[mat-icon-button] {
+    background-color:rgb(84, 158, 127);
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgb(103, 192, 155);
+    }
+  }
+  .content{
+    padding:24px;
+    
+  }
+  mat-sidenav-container{
+    height: calc(100vh - 64px);
+  }
+  mat-sidenav{
+    border-radius:0;
+    background: #B5FFCB; /* Color de fondo */
+
+  }
+
+  mat-sidenav,
+  mat-sidenav-content{
+    transition:all 500s ease-in-out;
+  }
+
+  .example-spacer {
+     flex: 1 1 auto;
+  }

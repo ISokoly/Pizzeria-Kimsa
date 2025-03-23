@@ -1,0 +1,157 @@
+// 🌿 Verdes frescos para una pizzería
+$color-primary: #a8d5ba;
+$color-secondary: #86c59d;
+$color-accent: #4b9b69;
+$color-hover: #3d8057;
+$color-danger: #e53e3e;
+$color-text: #2c3e2c;
+$color-border: #6ea989;
+
+.form-container {
+  max-width: 48rem; // 📏 Menos ancho para evitar que se vea muy alargado
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: $color-primary;
+  color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+// 📝 Estilo del título
+.form-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $color-border;
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+// 📄 Formulario y campos
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; // 🔄 Espaciado reducido
+  
+  .form-input,
+  .form-select {
+    width: 100%;
+    max-width: 100%; // 📏 Evita el desbordamiento
+    height: 3rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.375rem;
+    background-color: $color-secondary;
+    border: 1px solid $color-accent;
+    color: white;
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box; // 🛠 Ajuste clave para evitar desbordamientos
+  
+    &:focus {
+      border-color: $color-accent;
+      box-shadow: 0 0 0 2px $color-accent;
+    }
+  }
+  
+  // 📝 Ajustar el textarea para que no sea demasiado grande
+  textarea.form-input {
+    height: 6rem;
+    resize: none;
+    max-width: 100%; // 📏 Evita que crezca más allá del contenedor
+  }
+  
+  }
+
+
+// 💰 Contenedor del precio
+.price-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label-text {
+  color: $color-text;
+}
+
+// ✅ Botones
+.submit-btn, .cancel-btn {
+  width: 100%;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn {
+  background-color: $color-accent;
+  color: white;
+
+  &:hover {
+    background-color: $color-hover;
+  }
+}
+
+.cancel-btn {
+  background-color: gray;
+  color: white;
+
+  &:hover {
+    background-color: darkgray;
+  }
+}
+
+// 📋 Lista de productos
+.product-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem; // 🔄 Menos espacio arriba
+
+  .product-item {
+    background-color: $color-secondary;
+    padding: 0.75rem; // 🔄 Menos padding
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .product-details {
+    font-size: 1rem; // 🔄 Tamaño de texto más compacto
+    font-weight: 600;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .edit-btn {
+    background-color: $color-accent;
+    color: white;
+
+    &:hover {
+      background-color: $color-hover;
+    }
+  }
+
+  .delete-btn {
+    background-color: $color-danger;
+    color: white;
+
+    &:hover {
+      background-color: darkred;
+    }
+  }
+}
