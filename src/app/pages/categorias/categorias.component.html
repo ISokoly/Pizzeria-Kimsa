@@ -2,22 +2,25 @@
 
   <!-- Lista de categorías con imágenes -->
   <div class="products-container">
-    <h2 class="title">Productos de la pizzería</h2>
+    <h1 class="title">Productos de la pizzería</h1>
 
     <div class="products-grid">
       <div class="product-item" *ngFor="let categoria of categorias">
-        <h3 class="category-name" (click)="verProductos(categoria.nombre)" style="cursor: pointer;">
+        <h2 class="category-name" (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
           {{ categoria.nombre }}
-        </h3>
+        </h2>
         @if (categoria.imagen) {
           <img 
             [src]="categoria.imagen" 
             width="300" 
             class="preview-img" 
-            (click)="verProductos(categoria.nombre)"
+            (click)="verProductos(categoria.nombre, categoria.marca)"
             style="cursor: pointer;"
           >
         }
+        <h4 class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
+          {{ categoria.descripcion }}
+        </h4>
         <div class="actions">
           <button (click)="editCategoria(categoria)" class="edit-btn">Editar</button>
           <button (click)="deleteCategoria(categoria.id)" class="delete-btn">Eliminar</button>
@@ -46,7 +49,7 @@
         required
         class="form-input"
       >
-  
+    
       <textarea 
         [(ngModel)]="formData.descripcion" 
         name="descripcion" 
@@ -54,7 +57,7 @@
         required
         class="form-input"
       ></textarea>
-  
+    
       <div class="price-container">
         <label for="imagen" class="label-text">Imagen:</label>
         <input 
@@ -64,11 +67,19 @@
           class="form-input"
         >    
       </div>
-  
+    
+      <!-- Nuevo campo "Contiene marcas?" con botón cuadrado -->
+      <div class="marca-container">
+        <label class="label-text">¿Contiene marcas?</label>
+        <button type="button" (click)="toggleMarca()" class="marca-btn">
+          <span *ngIf="formData.marca">✔</span>
+        </button>
+      </div>
+    
       <button type="submit" class="submit-btn">
         {{ selectedCategoria ? 'Actualizar' : 'Crear' }}
       </button>
-  
+    
       <button 
         *ngIf="selectedCategoria" 
         type="button" 
@@ -77,9 +88,10 @@
       >
         Cancelar
       </button>
-  
+    
       <p *ngIf="!selectedCategoria">No hay categoría seleccionada.</p>
     </form>
+    
   </div>
   
   </div>

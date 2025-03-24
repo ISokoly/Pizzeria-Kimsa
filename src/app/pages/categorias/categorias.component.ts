@@ -15,21 +15,22 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 export class CategoriasComponent implements OnInit {
   cancelEditCategoria() {
     this.selectedCategoria = null;
-    this.formData = { nombre: '',  descripcion: '', imagen: ''}; // Restablecer formulario
+    this.formData = { nombre: '',  descripcion: '', imagen: '', marca: false}; // Restablecer formulario
     this.mostrarFormulario = false;
     document.body.style.overflow = 'auto';
   }
 
   categorias: any[] = [];
-  formData = { nombre: '', descripcion: '', imagen: '' };
+  formData = { nombre: '', descripcion: '', imagen: '', marca: false };
   selectedCategoria: any = null;
   imagePreview: string | null = null;
 
   constructor(private router: Router, private apiService: ApiService, private http: HttpClient) {}
 
-  verProductos(nombreCategoria: string) {
+  verProductos(nombreCategoria: string, marca: boolean) {
     const nombreFormateado = encodeURIComponent(nombreCategoria);
-    this.router.navigate([`/dashboard/producto/${nombreFormateado}`]);
+    const ruta = marca ? `/dashboard/productomarca/${nombreFormateado}` : `/dashboard/producto/${nombreFormateado}`;
+    this.router.navigate([ruta]);
   }
   
   ngOnInit(): void {
@@ -51,9 +52,14 @@ export class CategoriasComponent implements OnInit {
       });
     }
   }
-  
+
   saveCategoria(): void {
     if (this.selectedCategoria) {
+      if (!this.imagePreview && this.formData.imagen === this.selectedCategoria.imagen) {
+        alert('Seleccione una imagen');
+        return;
+      }
+  
       this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
         this.loadCategorias();
         this.resetForm();
@@ -64,9 +70,11 @@ export class CategoriasComponent implements OnInit {
         this.resetForm();
       });
     }
+  
     this.mostrarFormulario = false;
   }
-
+  
+  
   editCategoria(categoria: any): void {
     this.selectedCategoria = categoria;
     this.formData = { ...categoria };
@@ -80,9 +88,13 @@ export class CategoriasComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.formData = { nombre: '',  descripcion: '', imagen: ''};
+    this.formData = { nombre: '',  descripcion: '', imagen: '', marca: false};
     this.selectedCategoria = null;
     this.imagePreview = null;
+  }
+
+  toggleMarca() {
+    this.formData.marca = !this.formData.marca;
   }
 
   mostrarFormulario = false; // Estado para mostrar u ocultar el formulario

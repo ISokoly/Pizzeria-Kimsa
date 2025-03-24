@@ -81,8 +81,8 @@ export class ProductoComponent implements OnInit {
   }
 
   saveProducto(): void {
-    if (!this.formData.nombre || !this.formData.descripcion || !this.formData.precio || !this.formData.id_categoria || !this.formData.imagen) {
-      console.warn('Todos los campos son obligatorios');
+    if (!this.imagePreview && this.formData.imagen) {
+      alert('Seleccione una imagen');
       return;
     }
 

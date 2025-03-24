@@ -245,3 +245,30 @@ $color-light: #f9f9f9;
     }
   }
 }
+.marca-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.marca-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #333;
+  background-color: white;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  span {
+    color: green;
+  }
+}

@@ -3,6 +3,7 @@ import { ProductoComponent } from './pages/producto/producto.component';
 import { CategoriasComponent } from './pages/categorias/categorias.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProductoMarcasComponent } from './pages/productomarcas/productomarcas.component';
 export const routes: Routes = [
   {
     path:'',
@@ -15,7 +16,8 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'categoria', pathMatch: 'full' },
       { path: 'categoria', component: CategoriasComponent },
-      { path: 'producto/:nombreCategoria', component: ProductoComponent }
+      { path: 'producto/:nombreCategoria', component: ProductoComponent },
+      { path: 'productomarca/:nombreCategoria', component: ProductoMarcasComponent }
     ]
   },
   {

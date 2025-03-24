@@ -27,6 +27,23 @@ export class ApiService {
     return this.http.delete(`${this.apiUrl}/categorias/${id}`);
   }
 
+    // Marcas
+    getMarcas(): Observable<any> {
+      return this.http.get(`${this.apiUrl}/marcas`);
+    }
+  
+    createMarca(data: any): Observable<any> {
+      return this.http.post(`${this.apiUrl}/marcas`, data);
+    }
+  
+    updateMarca(id: number, data: any): Observable<any> {
+      return this.http.put(`${this.apiUrl}/marcas/${id}`, data);
+    }
+  
+    deleteMarca(id: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/marcas/${id}`);
+    }
+
   // Productos
   getProductos(): Observable<any> {
     this.http.get(`${this.apiUrl}/productos`).subscribe(data => console.log(data));
@@ -49,6 +66,29 @@ export class ApiService {
   deleteProducto(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/productos/${id}`);
   }
+
+    // Productos Bebidas
+    getProductosBebidas(): Observable<any> {
+      this.http.get(`${this.apiUrl}/productos_bebidas`).subscribe(data => console.log(data));
+  
+      return this.http.get(`${this.apiUrl}/productos_bebidas`);
+    }
+  
+    getProductosBebidasByCategoriaNombre(nombreCategoria: string): Observable<any> {
+      return this.http.get(`${this.apiUrl}/productos_bebidas/categoria/${encodeURIComponent(nombreCategoria)}`);
+    }
+  
+    createProductoBebida(data: any): Observable<any> {
+      return this.http.post(`${this.apiUrl}/productos_bebidas`, data);
+    }
+  
+    updateProductoBebida(id: number, data: any): Observable<any> {
+      return this.http.put(`${this.apiUrl}/productos_bebidas/${id}`, data);
+    }
+  
+    deleteProductoBebida(id: number): Observable<any> {
+      return this.http.delete(`${this.apiUrl}/productos_bebidas/${id}`);
+    }
 
   uploadImage(file: File): Observable<{ filePath: string }> {
     const formData = new FormData();

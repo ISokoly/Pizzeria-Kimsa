@@ -21,7 +21,6 @@ export class LoginComponent {
       next: (response) => {
         if (response.success) {
           this.router.navigate(['/dashboard']).then(() => {
-            location.reload(); // Recarga la página después de navegar
           });
         } else {
           this.error = 'Usuario o contraseña incorrectos';
