@@ -47,16 +47,16 @@
     ></textarea>
 
     <select 
-      [(ngModel)]="formData.id_categoria" 
-      name="id_categoria" 
-      required
-      class="form-select"
-    >
-      <option value="" disabled selected>Seleccione una categoría</option>
-      <option *ngFor="let categoria of categorias" [ngValue]="categoria.id">
-        {{ categoria.nombre }}
-      </option>
-    </select>
+    [(ngModel)]="formData.id_categoria" 
+    name="id_categoria" 
+    required
+    class="form-select"
+  >
+    <option value="" disabled>Seleccione una categoría</option>
+    <option *ngFor="let categoria of categorias" [ngValue]="categoria.id" [selected]="categoria.id === formData.id_categoria">
+      {{ categoria.nombre }}
+    </option>
+  </select>
 
     <div class="price-container">
       <label for="precio" class="label-text">Precio:</label>

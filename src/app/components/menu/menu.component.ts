@@ -86,9 +86,19 @@ export class MenuComponent {
 
   menuItems=signal<MenuItem[]>([
     {
-      icon:'video_library',
+      icon:'local_pizza',
       label:'Productos',
       route:'categoria'
+    },
+    {
+      icon:'store',
+      label:'Ventas',
+      route:'ventas'
+    },
+    {
+      icon:'trending_up',
+      label:'Estadisticas',
+      route:'estadisticas'
     }
   ])
 

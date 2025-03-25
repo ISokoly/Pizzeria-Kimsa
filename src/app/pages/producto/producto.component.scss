@@ -39,7 +39,7 @@ $color-bg: #f9f9f9;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
     &:hover {
-      transform: translateY(-5px);
+      transform: scale(1.02);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
@@ -55,11 +55,6 @@ $color-bg: #f9f9f9;
       height: auto;
       border-radius: 0.5rem;
       object-fit: cover;
-      transition: transform 0.2s ease-in-out;
-
-      &:hover {
-        transform: scale(1.01);
-      }
     }
 
     .product-description {

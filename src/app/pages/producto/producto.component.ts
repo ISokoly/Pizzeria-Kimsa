@@ -73,6 +73,11 @@ export class ProductoComponent implements OnInit {
       data => {
         console.log('Categorías cargadas:', data);
         this.categorias = data;
+  
+        const categoriaEncontrada = this.categorias.find(c => c.nombre === this.nombreCategoria);
+        if (categoriaEncontrada) {
+          this.formData.id_categoria = categoriaEncontrada.id;
+        }
       },
       error => {
         console.error('Error cargando categorías:', error);

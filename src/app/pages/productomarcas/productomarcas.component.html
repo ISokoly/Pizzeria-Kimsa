@@ -58,17 +58,17 @@
     </option>
   </select>
 
-    <select 
-      [(ngModel)]="formData.id_categoria" 
-      name="id_categoria" 
-      required
-      class="form-select"
-    >
-      <option value="" disabled selected>Seleccione una categoría</option>
-      <option *ngFor="let categoria of categorias" [ngValue]="categoria.id">
-        {{ categoria.nombre }}
-      </option>
-    </select>
+  <select 
+  [(ngModel)]="formData.id_categoria" 
+  name="id_categoria" 
+  required
+  class="form-select"
+>
+  <option value="" disabled>Seleccione una categoría</option>
+  <option *ngFor="let categoria of categorias" [ngValue]="categoria.id" [selected]="categoria.id === formData.id_categoria">
+    {{ categoria.nombre }}
+  </option>
+</select>
 
     <div class="price-container">
       <label for="precio" class="label-text">Precio:</label>
@@ -110,7 +110,6 @@
 </div>
 <button class="create-btn" (click)="abrirFormularioMarca()">Crear Nueva Marca</button>
 
-<!-- 📌 Formulario modal solo aparece cuando `mostrarFormularioMarca` es true -->
 <div *ngIf="mostrarFormularioMarca" class="overlay" (click)="cerrarFormularioMarca()"></div>
 
 <div *ngIf="mostrarFormularioMarca" class="form-modal">
@@ -129,16 +128,6 @@
         class="form-input"
       >
 
-      <div class="price-container">
-        <label for="imagen" class="label-text">Imagen:</label>
-        <input 
-          type="file" 
-          (change)="onFileSelected($event)"
-          accept="image/*"
-          class="form-input"
-        >    
-      </div>
-
       <button type="submit" class="submit-btn">
         {{ selectedMarca ? 'Actualizar' : 'Crear' }}
       </button>
@@ -151,8 +140,6 @@
       >
         Cancelar
       </button>
-
-      <p *ngIf="!selectedMarca">No hay marca seleccionada.</p>
     </form>
   </div>
 </div>

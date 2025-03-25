@@ -186,10 +186,11 @@ $color-light: #f9f9f9;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border: 1px solid $color-border;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
     &:hover {
       transform: scale(1.02);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
     .category-name {
@@ -205,9 +206,10 @@ $color-light: #f9f9f9;
     }
 
     .preview-img {
-      width: 100%;
+      max-width: 100%;
       height: auto;
-      border-radius: 5px;
+      border-radius: 0.5rem;
+      object-fit: cover;
     }
 
     .actions {

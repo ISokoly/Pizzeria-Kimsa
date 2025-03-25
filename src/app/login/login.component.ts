@@ -21,6 +21,7 @@ export class LoginComponent {
       next: (response) => {
         if (response.success) {
           this.router.navigate(['/dashboard']).then(() => {
+            location.reload();
           });
         } else {
           this.error = 'Usuario o contraseña incorrectos';
@@ -31,5 +32,4 @@ export class LoginComponent {
       }
     });
   }
-  
 }

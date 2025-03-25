@@ -30,7 +30,6 @@ export class ProductoMarcasComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const nombreCategoria = params.get('nombreCategoria');
-      console.log('Nombre de categoría obtenido del route:', nombreCategoria);
 
       if (nombreCategoria) {
         this.nombreCategoria = nombreCategoria;
@@ -90,6 +89,11 @@ export class ProductoMarcasComponent implements OnInit {
       data => {
         console.log('Categorías cargadas:', data);
         this.categorias = data;
+  
+        const categoriaEncontrada = this.categorias.find(c => c.nombre === this.nombreCategoria);
+        if (categoriaEncontrada) {
+          this.formData.id_categoria = categoriaEncontrada.id;
+        }
       },
       error => {
         console.error('Error cargando categorías:', error);
