@@ -8,6 +8,33 @@ $color-text: #2c3e2c;
 $color-border: #6ea989;
 $color-bg: #f9f9f9;
 
+.img-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f3f3f3;
+  padding: 10px;
+}
+
+.vertical-container {
+  width: 200px;
+  height: 300px;
+}
+
+.horizontal-container {
+  width: 300px;
+  height: 200px;
+}
+
+.img-vertical, .img-horizontal {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
 .products-container {
   padding: 2rem;
   background-color: $color-bg;
@@ -45,13 +72,6 @@ $color-bg: #f9f9f9;
       font-weight: bold;
       color: $color-text;
       margin-bottom: 0.5rem;
-    }
-
-    .preview-img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 0.5rem;
-      object-fit: cover;
     }
 
     .product-description {

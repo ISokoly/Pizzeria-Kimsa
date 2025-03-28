@@ -7,7 +7,13 @@
         {{ producto.nombre }}
       </h3>
       @if (producto.imagen) {
-        <img [src]="producto.imagen" alt="Imagen del producto" width="300" class="preview-img">
+        <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
+          <img [src]="producto.imagen" 
+               [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
+               alt="Imagen del producto"
+               class="preview-img">
+        </div>
+        
       }
       <p class="product-description">
         {{ producto.descripcion }} - ${{ producto.precio }}

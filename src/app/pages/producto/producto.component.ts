@@ -26,6 +26,7 @@ export class ProductoComponent implements OnInit {
   selectedMarca: any = null;
   mostrarFormularioMarca = false;
   selectedMarcaNombre: string = ''; // Para almacenar el nombre de la marca seleccionada
+  isVertical: boolean = false;
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
@@ -46,13 +47,24 @@ export class ProductoComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          this.isVertical = img.height > img.width;
+          this.imagePreview = img.src;
+        };
+      };
+      reader.readAsDataURL(file);
+  
+      // Subir la imagen sin afectar la lógica anterior
       this.apiService.uploadImage(file).subscribe(response => {
         this.formData.imagen = response.filePath;
-        this.imagePreview = `data:image/png;base64,${response.filePath}`;
       });
     }
   }
-
+  
   cancelEditProducto(): void {
     this.selectedProducto = null;
     this.resetForm();

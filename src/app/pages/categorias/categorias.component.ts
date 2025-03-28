@@ -13,6 +13,7 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./categorias.component.scss']
 })
 export class CategoriasComponent implements OnInit {
+  isVertical: boolean = false;
   cancelEditCategoria() {
     this.selectedCategoria = null;
     this.formData = { nombre: '',  descripcion: '', imagen: '', marca: false}; // Restablecer formulario
@@ -47,9 +48,19 @@ export class CategoriasComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          this.isVertical = img.height > img.width;
+          this.imagePreview = img.src;
+        };
+      };
+      reader.readAsDataURL(file);
+  
       this.apiService.uploadImage(file).subscribe(response => {
-        this.formData.imagen = response.filePath; // Guardamos la imagen en base64
-        this.imagePreview = `data:image/png;base64,${response.filePath}`;
+        this.formData.imagen = response.filePath;
       });
     }
   }

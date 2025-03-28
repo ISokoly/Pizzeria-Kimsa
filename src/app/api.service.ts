@@ -135,6 +135,7 @@ export class ApiService {
   uploadImage(file: File): Observable<{ filePath: string }> {
     const formData = new FormData();
     formData.append('image', file);
+  
     return this.http.post<{ filePath: string }>(`${this.apiUrl}/upload`, formData);
   }
 

@@ -10,13 +10,12 @@
           {{ categoria.nombre }}
         </h2>
         @if (categoria.imagen) {
-          <img 
-            [src]="categoria.imagen" 
-            width="300" 
-            class="preview-img" 
-            (click)="verProductos(categoria.nombre, categoria.marca)"
-            style="cursor: pointer;"
-          >
+          <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
+            <img [src]="categoria.imagen" 
+                 [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
+                 alt="Imagen de la Categoria"
+                 class="preview-img">
+          </div>
         }
         <h4 class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
           {{ categoria.descripcion }}

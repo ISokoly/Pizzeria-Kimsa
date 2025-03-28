@@ -16,9 +16,10 @@
   </div>
 
   <!-- Contenido solo para administradores -->
+  <h2>Otros Administradores</h2>
+
   <div *ngIf="usuario?.rol === 'Administrador'" class="info-admin">
     
-    <h2>Otros Administradores</h2>
     <div class="empleados">
       <ng-container *ngFor="let administrador of administradores">
         <div *ngIf="administrador.id_usuario !== usuario?.id_usuario" class="empleado-card">
@@ -31,9 +32,12 @@
     <button class="btn-azul" (click)="abrirFormulario('Administrador')">
       <mat-icon>add</mat-icon> Añadir Administrador
     </button>
-    
+  </div>
 
-    <h2>Empleados de la pizzería</h2>
+  <h2>Empleados de la pizzería</h2>
+
+    <div *ngIf="usuario?.rol === 'Administrador'" class="info-admin">
+
     <div class="empleados">
       <div *ngFor="let empleado of empleados" class="empleado-card">
         <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Rol:</strong> {{ empleado.rol }}</p>
