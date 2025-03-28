@@ -10,35 +10,44 @@
     <p><strong>DNI:</strong> {{ usuario?.dni }}</p>
     <p><strong>Dirección:</strong> {{ usuario?.direccion }}</p>
     <p><strong>Teléfono:</strong> {{ usuario?.telefono }}</p>
-
-    <p><strong>Contraseña:</strong> {{ mostrarContrasena ? usuario?.contrasena : '**********' }}</p>
-
-    <button class="btn-verde" (click)="toggleContrasena()">
-      {{ mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña' }}
-    </button>
     <button class="btn-verde" (click)="editarUsuario(usuario)">Editar usuario</button>
+    <button class="btn-rojo" (click)="eliminarUsuario(usuario.id_usuario)">Eliminar usuario</button>
+
   </div>
 
   <!-- Contenido solo para administradores -->
   <div *ngIf="usuario?.rol === 'Administrador'" class="info-admin">
-    <h2>Empleados de la pizzería</h2>
-  
-    <button class="btn-azul" (click)="abrirFormulario()">
-      <mat-icon>add</mat-icon> Añadir Empleado
+    
+    <h2>Otros Administradores</h2>
+    <div class="empleados">
+      <ng-container *ngFor="let administrador of administradores">
+        <div *ngIf="administrador.id_usuario !== usuario?.id_usuario" class="empleado-card">
+          <p><strong>Usuario:</strong> {{ administrador.usuario }} <strong>Rol:</strong> {{ administrador.rol }}</p>
+          <button class="btn-amarillo" (click)="editarUsuario(administrador)">Editar usuario</button>
+          <button class="btn-rojo" (click)="eliminarUsuario(administrador.id_usuario)">Eliminar usuario</button>
+        </div>
+      </ng-container>
+    </div>
+    <button class="btn-azul" (click)="abrirFormulario('Administrador')">
+      <mat-icon>add</mat-icon> Añadir Administrador
     </button>
-  
+    
+
+    <h2>Empleados de la pizzería</h2>
     <div class="empleados">
       <div *ngFor="let empleado of empleados" class="empleado-card">
-        <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Contraseña:</strong> **********</p>
+        <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Rol:</strong> {{ empleado.rol }}</p>
         <button class="btn-amarillo" (click)="editarUsuario(empleado)">Editar usuario</button>
         <button class="btn-rojo" (click)="eliminarUsuario(empleado.id_usuario)">Eliminar usuario</button>
       </div>
     </div>
+    <button class="btn-azul" (click)="abrirFormulario('Empleado')">
+      <mat-icon>add</mat-icon> Añadir Empleado
+    </button>
   </div>
-  
 
   <!-- Modal para agregar empleados (solo administradores) -->
-  <div *ngIf="(usuario?.rol === 'Administrador' || usuario?.rol === 'Empleado') && mostrarFormulario" class="modal">
+  <div *ngIf="mostrarFormulario" class="modal">
     <div class="form-modal">
       <h3 class="form-title">Nuevo Empleado</h3>
       <div class="form-container">
