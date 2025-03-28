@@ -15,11 +15,17 @@ export class LoginComponent {
   error: string = '';
 
   constructor(private apiService: ApiService, private router: Router) {}
-
+  
   login() {
     this.apiService.login(this.usuario, this.contrasena).subscribe({
       next: (response) => {
-        if (response.success) {
+        console.log('✅ Respuesta del servidor:', response); // 👀 Verifica qué devuelve el backend
+  
+        if (response.success && response.usuario && response.token) {
+          this.apiService.setUsuarioActual(response.usuario, response.token);
+          
+          console.log('🔍 Usuario guardado en localStorage:', localStorage.getItem('usuario')); // 👀 Confirma que se guarda
+  
           this.router.navigate(['/dashboard']).then(() => {
             location.reload();
           });
@@ -27,7 +33,8 @@ export class LoginComponent {
           this.error = 'Usuario o contraseña incorrectos';
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error('❌ Error en login:', err);
         this.error = 'Error al conectar con el servidor';
       }
     });

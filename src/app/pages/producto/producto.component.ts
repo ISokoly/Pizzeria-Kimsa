@@ -14,11 +14,18 @@ import { ApiService } from '../../api.service';
 export class ProductoComponent implements OnInit {
   productos: any[] = [];
   categorias: any[] = [];
-  formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '', imagen: ''};
+  marcas: any[] = [];
+  formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '', id_marca: null as number | null, imagen: ''};
   selectedProducto: any = null;
   nombreCategoria: string = '';
   imagePreview: string | null = null;
   selectedCategoriaNombre: string = 'Productos de la pizzería';
+  marcado: boolean = false;
+
+  formMarca = { nombre: ''};
+  selectedMarca: any = null;
+  mostrarFormularioMarca = false;
+  selectedMarcaNombre: string = ''; // Para almacenar el nombre de la marca seleccionada
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
@@ -26,7 +33,6 @@ export class ProductoComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       
       const nombreCategoria = params.get('nombreCategoria');
-      console.log('Nombre de categoría obtenido del route:', nombreCategoria);
 
       if (nombreCategoria) {
         this.nombreCategoria = nombreCategoria;
@@ -68,6 +74,18 @@ export class ProductoComponent implements OnInit {
     );
   }
 
+  loadMarcas(): void {
+    this.apiService.getMarcas().subscribe(
+      data => {
+        console.log('Marcas cargadas:', data);
+        this.marcas = data;
+      },
+      error => {
+        console.error('Error cargando marcas:', error);
+      }
+    );
+  }
+
   loadCategorias(): void {
     this.apiService.getCategorias().subscribe(
       data => {
@@ -77,12 +95,23 @@ export class ProductoComponent implements OnInit {
         const categoriaEncontrada = this.categorias.find(c => c.nombre === this.nombreCategoria);
         if (categoriaEncontrada) {
           this.formData.id_categoria = categoriaEncontrada.id;
+          this.marcado = categoriaEncontrada.marca;
+          
+          if (this.marcado) {
+            this.loadMarcas(); // Cargar marcas si la categoría las requiere
+          }
         }
       },
       error => {
         console.error('Error cargando categorías:', error);
       }
     );
+  }
+  
+
+  onMarcaSelected(): void {
+    const marcaSeleccionada = this.marcas.find(m => m.nombre === this.selectedMarcaNombre);
+    this.formData.id_marca = marcaSeleccionada ? marcaSeleccionada.id : null;
   }
 
   saveProducto(): void {
@@ -91,25 +120,31 @@ export class ProductoComponent implements OnInit {
       return;
     }
 
-    if (this.selectedProducto) {
-      this.apiService.updateProducto(this.selectedProducto.id, this.formData).subscribe(() => {
-        console.log('Producto actualizado:', this.formData);
-        this.loadProductos();
-        this.resetForm();
-      });
-    } else {
-      this.apiService.createProducto(this.formData).subscribe(() => {
-        console.log('Producto creado:', this.formData);
-        this.loadProductos();
-        this.resetForm();
-      });
+    if (!this.marcado) {
+      this.formData.id_marca = null;
     }
+
+    const accion = this.selectedProducto
+      ? this.apiService.updateProducto(this.selectedProducto.id, this.formData)
+      : this.apiService.createProducto(this.formData);
+
+    accion.subscribe(() => {
+      console.log(this.selectedProducto ? 'Producto actualizado' : 'Producto creado', this.formData);
+      this.loadProductos();
+      this.resetForm();
+    });
+
     this.mostrarFormularioProducto = false;
   }
+  
 
   editProducto(producto: any): void {
     this.selectedProducto = producto;
     this.formData = { ...producto };
+  
+    const marcaSeleccionada = this.marcas.find(m => m.id === this.formData.id_marca);
+    this.selectedMarcaNombre = marcaSeleccionada ? marcaSeleccionada.nombre : '';
+  
     this.mostrarFormularioProducto = true;
   }
 
@@ -121,22 +156,83 @@ export class ProductoComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.formData = { nombre: '', descripcion: '', precio: 0, id_categoria: '', imagen: '' };
+    this.formData = { nombre: '', descripcion: '', precio: 0, id_categoria: this.formData.id_categoria, id_marca: null, imagen: '' };
     this.selectedProducto = null;
     this.imagePreview = null;
+    this.selectedMarcaNombre = '';
   }
 
   mostrarFormularioProducto = false; // Estado para mostrar u ocultar el formulario
 
   abrirFormularioProducto(producto: any = null) {
-    this.selectedProducto = producto;
+    if (!producto) {
+      this.resetForm(); // Resetea el formulario al abrirlo para crear un nuevo producto
+    } else {
+      this.selectedProducto = producto;
+      this.formData = { ...producto };
+  
+      // Si la categoría tiene marcas, actualizar el nombre de la marca seleccionada
+      const marcaSeleccionada = this.marcas.find(m => m.id === this.formData.id_marca);
+      this.selectedMarcaNombre = marcaSeleccionada ? marcaSeleccionada.nombre : '';
+    }
+  
     this.mostrarFormularioProducto = true;
-    document.body.style.overflow = 'hidden'; // Bloquea el scroll del fondo
+    document.body.style.overflow = 'hidden';
+  
+    if (this.marcado) {
+      this.loadMarcas();
+    }
   }
   
   cerrarFormularioProducto() {
     this.selectedProducto = null;
     this.mostrarFormularioProducto = false;
     document.body.style.overflow = 'auto'; // Restaura el scroll
+  }
+
+  abrirFormularioMarca(marca: any = null) {
+    this.selectedMarca = marca;
+    this.mostrarFormularioMarca = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  cerrarFormularioMarca() {
+    this.selectedMarca = null;
+    this.mostrarFormularioMarca = false;
+    document.body.style.overflow = 'auto';
+    this.resetFormMarca();
+  }
+
+  resetFormMarca(): void {
+    this.formMarca = { nombre: '' };
+    this.selectedMarca = null;
+  }
+  
+  saveMarca(): void {
+    if (!this.formMarca.nombre) {
+      console.warn('El nombre de la marca es obligatorio');
+      return;
+    }
+
+    if (this.selectedMarca) {
+      this.apiService.updateMarca(this.selectedMarca.id, this.formMarca).subscribe(() => {
+        console.log('Marca actualizada:', this.formMarca);
+        this.loadMarcas();
+        this.cerrarFormularioMarca();
+      });
+    } else {
+      this.apiService.createMarca(this.formMarca).subscribe(() => {
+        console.log('Marca creada:', this.formMarca);
+        this.loadMarcas();
+        this.cerrarFormularioMarca();
+      });
+    }
+  }
+
+  cancelEditMarca() {
+    this.selectedMarca = null;
+    this.formMarca = { nombre: ''};
+    this.mostrarFormularioMarca = false;
+    document.body.style.overflow = 'auto';
   }
 }

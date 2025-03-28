@@ -1,0 +1,76 @@
+<div class="contenedor">
+  <h1 *ngIf="usuario?.rol === 'Administrador'">Administrador de la pizzería</h1>
+  <h1 *ngIf="usuario?.rol === 'Empleado'">Perfil del Empleado</h1>
+
+  <div class="info-admin">
+    <p><strong>Usuario:</strong> {{ usuario?.usuario }}</p>
+    <p><strong>Nombre:</strong> {{ usuario?.nombre }}</p>
+    <p><strong>Apellido:</strong> {{ usuario?.apellido }}</p>
+    <p><strong>Rol:</strong> {{ usuario?.rol }}</p>
+    <p><strong>DNI:</strong> {{ usuario?.dni }}</p>
+    <p><strong>Dirección:</strong> {{ usuario?.direccion }}</p>
+    <p><strong>Teléfono:</strong> {{ usuario?.telefono }}</p>
+
+    <p><strong>Contraseña:</strong> {{ mostrarContrasena ? usuario?.contrasena : '**********' }}</p>
+
+    <button class="btn-verde" (click)="toggleContrasena()">
+      {{ mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña' }}
+    </button>
+    <button class="btn-verde" (click)="editarUsuario(usuario)">Editar usuario</button>
+  </div>
+
+  <!-- Contenido solo para administradores -->
+  <div *ngIf="usuario?.rol === 'Administrador'" class="info-admin">
+    <h2>Empleados de la pizzería</h2>
+  
+    <button class="btn-azul" (click)="abrirFormulario()">
+      <mat-icon>add</mat-icon> Añadir Empleado
+    </button>
+  
+    <div class="empleados">
+      <div *ngFor="let empleado of empleados" class="empleado-card">
+        <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Contraseña:</strong> **********</p>
+        <button class="btn-amarillo" (click)="editarUsuario(empleado)">Editar usuario</button>
+        <button class="btn-rojo" (click)="eliminarUsuario(empleado.id_usuario)">Eliminar usuario</button>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Modal para agregar empleados (solo administradores) -->
+  <div *ngIf="(usuario?.rol === 'Administrador' || usuario?.rol === 'Empleado') && mostrarFormulario" class="modal">
+    <div class="form-modal">
+      <h3 class="form-title">Nuevo Empleado</h3>
+      <div class="form-container">
+        <div class="form">
+          <label>Usuario:
+            <input type="text" class="form-input" name="usuario" [(ngModel)]="nuevoEmpleado.usuario" autocomplete="off">
+          </label>
+          <label>Nombre:
+            <input type="text" class="form-input" [(ngModel)]="nuevoEmpleado.nombre" autocomplete="off">
+          </label>
+          <label>Apellido:
+            <input type="text" class="form-input" [(ngModel)]="nuevoEmpleado.apellido" autocomplete="off">
+          </label>
+          <label>DNI:
+            <input type="text" class="form-input" [(ngModel)]="nuevoEmpleado.dni" autocomplete="off">
+          </label>
+          <label>Dirección:
+            <input type="text" class="form-input" [(ngModel)]="nuevoEmpleado.direccion" autocomplete="off">
+          </label>
+          <label>Teléfono:
+            <input type="text" class="form-input" [(ngModel)]="nuevoEmpleado.telefono" autocomplete="off">
+          </label>
+          <label>Contraseña:
+            <input type="password" class="form-input" name="contrasena" [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
+          </label>
+        </div>
+  
+        <div class="botones">
+          <button class="form-btn-verde" (click)="guardarEmpleado()">Guardar</button>
+          <button class="form-btn-gris" (click)="cerrarFormulario()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

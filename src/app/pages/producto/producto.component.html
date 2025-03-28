@@ -20,7 +20,7 @@
   </div>
 </div>  
 
-<button class="create-btn" (click)="abrirFormularioProducto()">Crear Nuevo Producto</button>
+<button class="create-btn" (click)="abrirFormularioProducto()">Añadir un nuevo Producto</button>
 
 <div *ngIf="mostrarFormularioProducto" class="overlay" (click)="cerrarFormularioProducto()"></div>
 
@@ -46,17 +46,34 @@
       class="form-input"
     ></textarea>
 
-    <select 
-    [(ngModel)]="formData.id_categoria" 
-    name="id_categoria" 
-    required
-    class="form-select"
-  >
-    <option value="" disabled>Seleccione una categoría</option>
-    <option *ngFor="let categoria of categorias" [ngValue]="categoria.id" [selected]="categoria.id === formData.id_categoria">
-      {{ categoria.nombre }}
-    </option>
-  </select>
+    <div *ngIf="marcado">
+      <input 
+        [(ngModel)]="selectedMarcaNombre"
+        name="id_marca"
+        type="text"
+        list="marcasList"
+        (change)="onMarcaSelected()"
+        placeholder="Escriba o seleccione una marca"
+        class="form-input"
+      />
+      <datalist id="marcasList">
+        <option *ngFor="let marca of marcas" [value]="marca.nombre"></option>
+      </datalist>
+    </div>
+    
+    
+<select 
+  [(ngModel)]="formData.id_categoria" 
+  name="id_categoria" 
+  required
+  class="form-select"
+  [disabled]="formData.id_categoria !== ''"
+>
+  <option value="" disabled>Seleccione una categoría</option>
+  <option *ngFor="let categoria of categorias" [ngValue]="categoria.id" [selected]="categoria.id === formData.id_categoria">
+    {{ categoria.nombre }}
+  </option>
+</select>
 
     <div class="price-container">
       <label for="precio" class="label-text">Precio:</label>
@@ -93,5 +110,43 @@
     </button>
 
   </form>
+</div>
+</div>
+
+<div *ngIf="marcado">
+
+<button class="create-btn" (click)="abrirFormularioMarca()">Añadir una Marca</button>
+
+<div *ngIf="mostrarFormularioMarca" class="overlay" (click)="cerrarFormularioMarca()"></div>
+
+<div *ngIf="mostrarFormularioMarca" class="form-modal">
+  <div class="form-container">
+    <h2 class="form-title">
+      {{ selectedMarca ? 'Editar Marca' : 'Crear Marca' }}
+    </h2>
+
+    <form (ngSubmit)="saveMarca()" class="form">
+      <input 
+        type="text" 
+        [(ngModel)]="formMarca.nombre" 
+        name="nombre" 
+        placeholder="Nombre de la marca" 
+        required
+        class="form-input"
+      >
+
+      <button type="submit" class="submit-btn">
+        {{ selectedMarca ? 'Actualizar' : 'Crear' }}
+      </button>
+
+      <button 
+        type="button" 
+        (click)="cancelEditMarca()" 
+        class="cancel-btn"
+      >
+        Cancelar
+      </button>
+    </form>
+  </div>
 </div>
 </div>

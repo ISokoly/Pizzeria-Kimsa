@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../api.service';
 import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-categorias',
@@ -27,10 +27,11 @@ export class CategoriasComponent implements OnInit {
 
   constructor(private router: Router, private apiService: ApiService, private http: HttpClient) {}
 
-  verProductos(nombreCategoria: string, marca: boolean) {
+  verProductos(nombreCategoria: string, marcado: boolean) {
     const nombreFormateado = encodeURIComponent(nombreCategoria);
-    const ruta = marca ? `/dashboard/productomarca/${nombreFormateado}` : `/dashboard/producto/${nombreFormateado}`;
+    const ruta = `/dashboard/producto/${nombreFormateado}`;
     this.router.navigate([ruta]);
+    marcado = this.formData.marca;
   }
   
   ngOnInit(): void {
