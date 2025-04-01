@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../api.service';
+import { ApiService } from '../core/services/api.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -14,19 +14,19 @@ export class LoginComponent {
   contrasena: string = '';
   error: string = '';
 
-  constructor(private apiService: ApiService, private router: Router) {}
-  
+  constructor(private apiService: ApiService, private router: Router) { }
+
   login() {
     this.apiService.login(this.usuario, this.contrasena).subscribe({
       next: (response) => {
         console.log('✅ Respuesta del servidor:', response); // 👀 Verifica qué devuelve el backend
-  
+
         if (response.success && response.usuario && response.token) {
           this.apiService.setUsuarioActual(response.usuario, response.token);
-          
+
           console.log('🔍 Usuario guardado en localStorage:', localStorage.getItem('usuario')); // 👀 Confirma que se guarda
-  
-          this.router.navigate(['/dashboard']).then(() => {
+
+          this.router.navigate(['/view']).then(() => {
             location.reload();
           });
         } else {

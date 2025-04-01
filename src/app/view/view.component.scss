@@ -1,0 +1,76 @@
+mat-toolbar {
+  position: relative;
+  z-index: 5;
+  box-shadow: var(--mat-sys-level3);
+  background: #07603A;
+  color: white;
+}
+
+button[mat-icon-button] {
+  background-color: #409470;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+
+  &:hover {
+    background-color: #76C7A0;
+    transform: scale(1.1);
+  }
+}
+
+.content {
+  padding: 24px;
+}
+
+mat-sidenav-container {
+  height: calc(100vh - 64px);
+}
+
+mat-sidenav {
+  border-radius: 0;
+  background: #E4FF8E; /* Verde pastel */
+  transition: width 0.3s ease-in-out;
+}
+
+mat-sidenav-content {
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+/* Botón de usuario estilizado */
+.usuario-btn {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+
+  &:hover {
+    color: #ccffd2; /* Verde pastel */
+  }
+}
+
+.usuario-btn mat-icon {
+  margin-right: 5px;
+  color: white;
+}
+
+button[mat-button] {
+  background-color: #409470;
+  color: white;
+  border-radius: 5px;
+  padding: 6px 12px;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+
+  &:hover {
+    background-color: #76C7A0;
+    transform: scale(1.05);
+  }
+}

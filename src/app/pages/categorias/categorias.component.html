@@ -1,96 +1,80 @@
-<div class="admin-panel">
+<div class="contenedor">
+  <div class="categoria-container">
+    <div class="admin-panel">
+      <div class="products-container">
+        <h1>Categorías de la pizzería</h1>
 
-  <!-- Lista de categorías con imágenes -->
-  <div class="products-container">
-    <h1>Productos de la pizzería</h1>
-
-    <div class="products-grid">
-      <div class="product-item" *ngFor="let categoria of categorias">
-        <h2 class="category-name" (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
-          {{ categoria.nombre }}
-        </h2>
-        @if (categoria.imagen) {
-          <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
-            <img [src]="categoria.imagen" 
-                 [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
-                 alt="Imagen de la Categoria"
-                 class="preview-img">
-          </div>
-        }
-        <h4 class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
-          {{ categoria.descripcion }}
-        </h4>
-        <div class="actions">
-          <button (click)="editCategoria(categoria)" class="edit-btn">Editar</button>
-          <button (click)="deleteCategoria(categoria.id)" class="delete-btn">Eliminar</button>
+        <div class="products-grid">
+          @for (categoria of categorias; track $index) {
+          <div class="product-item">
+            <h2 class="category-name" (click)="verProductos(categoria.nombre, categoria.marca)"
+              style="cursor: pointer;">
+              {{ categoria.nombre }}
+            </h2>
+            @if (categoria.imagen) {
+            <div class="img-container"
+              [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }"
+              (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
+              <img [src]="categoria.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
+                alt="Imagen de la Categoría" class="preview-img">
+            </div>
+            }
+            <h4 class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)"
+              style="cursor: pointer;">
+              {{ categoria.descripcion }}
+            </h4>
+            <div class="actions">
+              <button (click)="editCategoria(categoria)" class="edit-btn">Editar</button>
+              <button (click)="deleteCategoria(categoria.id, categoria.nombre)" class="delete-btn">Eliminar</button>
+            </div>
+          </div>}
         </div>
       </div>
     </div>
+    <button class="create-btn" (click)="abrirFormulario()">Crear Nueva Categoría</button>
   </div>
 </div>
-  <button class="create-btn" (click)="abrirFormulario()">Crear Nueva Categoría</button>
 
-  <!-- 📌 Formulario modal solo aparece cuando `mostrarFormulario` es true -->
-  <div *ngIf="mostrarFormulario" class="overlay" (click)="cerrarFormulario()"></div>
-  
-  <div *ngIf="mostrarFormulario" class="form-modal">
-  <div class="form-container">
+@if (mostrarFormulario) {
+<body class="modal-abierto"></body>
+<div class="modal">
+  <div class="form-modal">
     <h2 class="form-title">
       {{ selectedCategoria ? 'Editar Categoría' : 'Crear Categoría' }}
     </h2>
-  
-    <form (ngSubmit)="saveCategoria()" class="form">
-      <input 
-        type="text" 
-        [(ngModel)]="formData.nombre" 
-        name="nombre" 
-        placeholder="Nombre de la categoría" 
-        required
-        class="form-input"
-      >
-    
-      <textarea 
-        [(ngModel)]="formData.descripcion" 
-        name="descripcion" 
-        placeholder="Descripción" 
-        required
-        class="form-input"
-      ></textarea>
-    
-      <div class="price-container">
-        <label for="imagen" class="label-text">Imagen:</label>
-        <input 
-          type="file" 
-          (change)="onFileSelected($event)"
-          accept="image/*"
-          class="form-input"
-        >    
-      </div>
-    
-      <!-- Nuevo campo "Contiene marcas?" con botón cuadrado -->
-      <div class="marca-container">
-        <label class="label-text">¿Contiene marcas?</label>
+    <form (ngSubmit)="saveCategoria()" class="form-container">
+      <label>
+        Nombre de la categoría:
+        <input type="text" [(ngModel)]="formData.nombre" name="nombre" required class="form-input">
+      </label>
+
+      <label>
+        Descripción:
+        <textarea [(ngModel)]="formData.descripcion" name="descripcion" required class="form-input"></textarea>
+      </label>
+
+      <label>
+        Imagen:
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-input">
+      </label>
+      
+      <div class="marca-container" style="display: flex; align-items: center; gap: 10px;">
+        <label class="label-text" style="margin-bottom: 0;">¿Contiene marcas?</label>
         <button type="button" (click)="toggleMarca()" class="marca-btn">
-          <span *ngIf="formData.marca">✔</span>
+          @if (formData.marca) { <span>✔</span> }
         </button>
       </div>
-    
-      <button type="submit" class="submit-btn">
-        {{ selectedCategoria ? 'Actualizar' : 'Crear' }}
-      </button>
-    
-      <button 
-        *ngIf="selectedCategoria" 
-        type="button" 
-        (click)="cancelEditCategoria()" 
-        class="cancel-btn"
-      >
-        Cancelar
-      </button>
-    
+
+
+      <div class="botones">
+        <button type="submit" class="form-btn-verde">
+          {{ selectedCategoria ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button type="button" (click)="cancelEditCategoria()" class="form-btn-gris">
+          Cancelar
+        </button>
+      </div>
     </form>
-    
   </div>
-  
-  </div>
-<router-outlet></router-outlet>
+</div>
+}

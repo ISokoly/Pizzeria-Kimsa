@@ -1,158 +1,134 @@
-<div class="products-container">
-  <h1 class="title">{{ nombreCategoria }}</h1>
+<div class="contenedor">
+  <div class="products-container">
+    <h1 class="title">{{ nombreCategoria }}</h1>
 
-  <div class="products-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
-    <div class="product-item" *ngFor="let producto of productos">
-      <h3 class="product-name">
-        {{ producto.nombre }}
-      </h3>
-      @if (producto.imagen) {
-        <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
-          <img [src]="producto.imagen" 
-               [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
-               alt="Imagen del producto"
-               class="preview-img">
+    <div class="products-grid">
+      <div class="product-item" *ngFor="let producto of productos">
+        <h3 class="product-name">
+          {{ producto.nombre }}
+        </h3>
+        <div *ngIf="producto.imagen">
+          <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
+            <img [src]="producto.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }" alt="Imagen del producto" class="preview-img">
+          </div>
         </div>
-        
-      }
-      <p class="product-description">
-        {{ producto.descripcion }} - ${{ producto.precio }}
-      </p>
-      <div class="actions">
-        <button (click)="editProducto(producto)" class="edit-btn">Editar</button>
-        <button (click)="deleteProducto(producto.id)" class="delete-btn">Eliminar</button>
+        <p class="product-description">
+          {{ producto.descripcion }} - ${{ producto.precio }}
+        </p>
+        <div class="actions">
+          <button (click)="editProducto(producto)" class="edit-btn">Editar</button>
+          <button (click)="deleteProducto(producto.id)" class="delete-btn">Eliminar</button>
+        </div>
       </div>
     </div>
-  </div>
-</div>  
-
-<button class="create-btn" (click)="abrirFormularioProducto()">Añadir un nuevo Producto</button>
-
-<div *ngIf="mostrarFormularioProducto" class="overlay" (click)="cerrarFormularioProducto()"></div>
-
-<div *ngIf="mostrarFormularioProducto" class="form-modal">
-<div class="form-container">
-  <h2 class="form-title">Productos</h2>
-  
-  <form (ngSubmit)="saveProducto()" class="form">
-    <input 
-      type="text" 
-      [(ngModel)]="formData.nombre" 
-      name="nombre" 
-      placeholder="Nombre del producto" 
-      required
-      class="form-input"
-    >
-
-    <textarea 
-      [(ngModel)]="formData.descripcion" 
-      name="descripcion" 
-      placeholder="Descripción" 
-      required
-      class="form-input"
-    ></textarea>
-
+    <button class="create-btn" (click)="abrirFormularioProducto()">Añadir un nuevo Producto</button>
     <div *ngIf="marcado">
-      <input 
-        [(ngModel)]="selectedMarcaNombre"
-        name="id_marca"
-        type="text"
-        list="marcasList"
-        (change)="onMarcaSelected()"
-        placeholder="Escriba o seleccione una marca"
-        class="form-input"
-      />
-      <datalist id="marcasList">
-        <option *ngFor="let marca of marcas" [value]="marca.nombre"></option>
-      </datalist>
+      <button class="create-btn" (click)="abrirFormularioMarca()">Añadir una Marca</button>
     </div>
-    
-    
-<select 
-  [(ngModel)]="formData.id_categoria" 
-  name="id_categoria" 
-  required
-  class="form-select"
-  [disabled]="formData.id_categoria !== ''"
->
-  <option value="" disabled>Seleccione una categoría</option>
-  <option *ngFor="let categoria of categorias" [ngValue]="categoria.id" [selected]="categoria.id === formData.id_categoria">
-    {{ categoria.nombre }}
-  </option>
-</select>
-
-    <div class="price-container">
-      <label for="precio" class="label-text">Precio:</label>
-      <input 
-        id="precio"
-        type="number" 
-        [(ngModel)]="formData.precio" 
-        name="precio" 
-        required
-        class="form-input w-full"
-      >
-    </div>
-
-    <div class="price-container">
-      <label for="imagen" class="label-text">Imagen:</label>
-      <input 
-        type="file" 
-        (change)="onFileSelected($event)"
-        accept="image/*"
-        class="input-field">    
-    </div>
-
-    <button type="submit" class="submit-btn">
-      {{ selectedProducto ? 'Actualizar' : 'Crear' }}
-    </button>
-
-    <button 
-      *ngIf="selectedProducto" 
-      type="button" 
-      (click)="cancelEditProducto()" 
-      class="cancel-btn"
-    >
-      Cancelar
-    </button>
-
-  </form>
+  </div>
 </div>
+
+<div *ngIf="mostrarFormularioProducto">
+  <body class="modal-abierto"></body>
+  <div class="modal">
+    <div class="form-modal">
+      <h2 class="form-title">Productos</h2>
+
+      <form (ngSubmit)="saveProducto()" class="form-container">
+        <label>
+          Nombre del producto:
+          <input type="text" [(ngModel)]="formData.nombre" name="nombre" required class="form-input">
+        </label>
+
+        <label>
+          Descripción:
+          <textarea [(ngModel)]="formData.descripcion" name="descripcion" required class="form-input"></textarea>
+        </label>
+
+        <div *ngIf="marcado" class="marca-container">
+          <label>
+            Marca:
+            <input
+              [(ngModel)]="selectedMarcaNombre"
+              name="id_marca"
+              type="text"
+              (input)="filtrarMarcas()"
+              (focus)="mostrarListaMarcas()"
+              (blur)="ocultarListaConRetraso()"
+              placeholder="Escriba o seleccione una marca"
+              class="form-input"
+              autocomplete="off"
+            />
+          </label>
+          <ul *ngIf="mostrarLista" class="marcas-lista">
+            <li
+              *ngFor="let marca of marcasFiltradas"
+              (mousedown)="seleccionarMarca(marca.nombre)"
+            >
+              {{ marca.nombre }}
+            </li>
+          </ul>
+        </div>
+
+        <label>
+          Precio:
+          <input type="number" [(ngModel)]="formData.precio" name="precio" required class="form-input">
+        </label>
+
+        <label>
+          Imagen:
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-input">
+        </label>
+
+        <div class="botones">
+          <button type="submit" class="form-btn-verde">
+            {{ selectedProducto ? 'Actualizar' : 'Crear' }}
+          </button>
+          <button type="button" (click)="cancelEditProducto()" class="form-btn-gris">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <div *ngIf="marcado">
+  <div *ngIf="mostrarFormularioMarca">
+    <body class="modal-abierto"></body>
+    <div class="modal">
+      <div class="form-modal">
+        <h2 class="form-title">
+          {{ selectedMarca ? 'Editar Marca' : 'Crear Marca' }}
+        </h2>
 
-<button class="create-btn" (click)="abrirFormularioMarca()">Añadir una Marca</button>
+        <form (ngSubmit)="saveMarca()" class="form-container">
+          <label>
+            Nombre de la marca:
+            <input type="text" [(ngModel)]="formMarca.nombre" name="nombre" required class="form-input">
+          </label>
 
-<div *ngIf="mostrarFormularioMarca" class="overlay" (click)="cerrarFormularioMarca()"></div>
+          <label>
+            Tipo de Marca:
+            <select [(ngModel)]="formMarca.tipos_marcas" name="tipos_marcas" required class="form-input"
+              [disabled]="formMarca.tipos_marcas !== ''">
+              <option value="" disabled>Seleccione un Tipo de Marca</option>
+              <option *ngFor="let tiposMarca of tiposMarcas" [ngValue]="tiposMarca.id">
+                {{ tiposMarca.nombre }}
+              </option>
+            </select>
+          </label>
 
-<div *ngIf="mostrarFormularioMarca" class="form-modal">
-  <div class="form-container">
-    <h2 class="form-title">
-      {{ selectedMarca ? 'Editar Marca' : 'Crear Marca' }}
-    </h2>
-
-    <form (ngSubmit)="saveMarca()" class="form">
-      <input 
-        type="text" 
-        [(ngModel)]="formMarca.nombre" 
-        name="nombre" 
-        placeholder="Nombre de la marca" 
-        required
-        class="form-input"
-      >
-
-      <button type="submit" class="submit-btn">
-        {{ selectedMarca ? 'Actualizar' : 'Crear' }}
-      </button>
-
-      <button 
-        type="button" 
-        (click)="cancelEditMarca()" 
-        class="cancel-btn"
-      >
-        Cancelar
-      </button>
-    </form>
+          <div class="botones">
+            <button type="submit" class="form-btn-verde">
+              {{ selectedMarca ? 'Actualizar' : 'Crear' }}
+            </button>
+            <button type="button" (click)="cancelEditMarca()" class="form-btn-gris">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-</div>
 </div>

@@ -25,13 +25,11 @@ export type MenuItem={
     @for (item of menuItems(); track $index) {
       <a  class="menu-item">
       <mat-list-item routerLinkActive ="selected-menu-item" 
-      #rla="routerLinkActive" routerLink={{item.route}}
-      [activated]="rla.isActive" >
+      #rla="routerLinkActive" routerLink={{item.route}}>
         <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
         @if (!sideNavCollpsed()) {
-          <span matListItemTitle>{{item.label}}</span>
+          <span class="title" matListItemTitle>{{item.label}}</span>
         }
-        
       </mat-list-item>
       </a>
     }
@@ -42,6 +40,24 @@ export type MenuItem={
   :host{
     transition:all 500ms ease-in-out
   }
+  mat-list-item {
+  border: 2px solid transparent; /* Borde invisible por defecto */
+  color: #D32F2F; /* Rojo tomate para el texto */
+
+  mat-icon {
+    color: #D32F2F; /* Rojo tomate para los íconos */
+  }
+
+  .title {
+    font-weight: bold;
+    color: #D32F2F; /* Rojo tomate para los títulos */
+  }
+
+  &:hover {
+    background-color: rgba(221, 44, 44, 0.1); /* Fondo suave de rojo cuando se pasa el cursor */
+    border-color: #D32F2F; /* Borde rojo cuando se pasa el cursor */
+  }
+}
     .sidenav-header{
       padding-top: 24px;
       text-align:center;
@@ -67,14 +83,17 @@ export type MenuItem={
       opacity:0;
       height:0px !important ;
     }
-    .selected-menu-item{
-    }
+
     .menu-item{
       border-right: 50px solid;
       border-color:rgba(48, 17, 187, 0);
       
     }
-    
+    .selected-menu-item {
+      border-left: 5px solid #D32F2F; /* Borde rojo tomate al seleccionar */
+      background-color: rgba(221, 44, 44, 0.3); /* Fondo suave rojo para los elementos seleccionados */
+      border-color: #D32F2F; /* Borde rojo cuando se selecciona */
+}
   `
 })
 export class MenuComponent {

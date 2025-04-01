@@ -1,6 +1,11 @@
 <div class="contenedor">
-  <h1 *ngIf="usuario?.rol === 'Administrador'">Administrador de la pizzería</h1>
-  <h1 *ngIf="usuario?.rol === 'Empleado'">Perfil del Empleado</h1>
+  <div class="usuarios-container">
+    @if(usuario?.rol === 'Administrador'){
+      <h1>Administrador de la pizzería</h1>
+    }
+    @else if(usuario?.rol === 'Empleado'){
+      <h1>Perfil del Empleado</h1>
+    }
 
   <div class="info-admin">
     <p><strong>Usuario:</strong> {{ usuario?.usuario }}</p>
@@ -17,17 +22,22 @@
 
   <!-- Contenido solo para administradores -->
   <h2>Otros Administradores</h2>
+  @if(usuario?.rol === 'Administrador'){
 
-  <div *ngIf="usuario?.rol === 'Administrador'" class="info-admin">
+  <div class="info-admin">
     
     <div class="empleados">
-      <ng-container *ngFor="let administrador of administradores">
-        <div *ngIf="administrador.id_usuario !== usuario?.id_usuario" class="empleado-card">
-          <p><strong>Usuario:</strong> {{ administrador.usuario }} <strong>Rol:</strong> {{ administrador.rol }}</p>
-          <button class="btn-amarillo" (click)="editarUsuario(administrador)">Editar usuario</button>
-          <button class="btn-rojo" (click)="eliminarUsuario(administrador.id_usuario)">Eliminar usuario</button>
-        </div>
-      </ng-container>
+      @for(administrador of administradores; track $index){
+        <ng-container>
+          @if(administrador.id_usuario !== usuario?.id_usuario) {
+            <div class="empleado-card">
+              <p><strong>Usuario:</strong> {{ administrador.usuario }} <strong>Rol:</strong> {{ administrador.rol }}</p>
+              <button class="btn-amarillo" (click)="editarUsuario(administrador)">Editar usuario</button>
+              <button class="btn-rojo" (click)="eliminarUsuario(administrador.id_usuario)">Eliminar usuario</button>
+            </div>
+          }
+        </ng-container>
+      }
     </div>
     <button class="btn-azul" (click)="abrirFormulario('Administrador')">
       <mat-icon>add</mat-icon> Añadir Administrador
@@ -36,24 +46,40 @@
 
   <h2>Empleados de la pizzería</h2>
 
-    <div *ngIf="usuario?.rol === 'Administrador'" class="info-admin">
+    <div class="info-admin">
+      <div class="empleados">
 
-    <div class="empleados">
-      <div *ngFor="let empleado of empleados" class="empleado-card">
-        <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Rol:</strong> {{ empleado.rol }}</p>
-        <button class="btn-amarillo" (click)="editarUsuario(empleado)">Editar usuario</button>
-        <button class="btn-rojo" (click)="eliminarUsuario(empleado.id_usuario)">Eliminar usuario</button>
+        @for(empleado of empleados; track $index){
+            <div class="empleado-card">
+              <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Rol:</strong> {{ empleado.rol }}</p>
+              <button class="btn-amarillo" (click)="editarUsuario(empleado)">Editar usuario</button>
+              <button class="btn-rojo" (click)="eliminarUsuario(empleado.id_usuario)">Eliminar usuario</button>
+            </div>
+        }
       </div>
-    </div>
-    <button class="btn-azul" (click)="abrirFormulario('Empleado')">
-      <mat-icon>add</mat-icon> Añadir Empleado
-    </button>
-  </div>
 
-  <!-- Modal para agregar empleados (solo administradores) -->
-  <div *ngIf="mostrarFormulario" class="modal">
+      <button class="btn-azul" (click)="abrirFormulario('Empleado')">
+        <mat-icon>add</mat-icon> Añadir Empleado
+      </button>
+    </div>
+  }
+</div>
+</div>
+<!-- Modal para agregar empleados (solo administradores) -->
+@if(mostrarFormulario){
+  <div class="modal">
     <div class="form-modal">
-      <h3 class="form-title">Nuevo Empleado</h3>
+      @if (userSeleccionado) {
+        <h3 class="form-title">Editar Usuario</h3>
+      }
+      @else if (nuevoEmpleado.rol === 'Administrador') 
+      {
+        <h3 class="form-title">Nuevo Administrador</h3>
+      }
+      @else if (nuevoEmpleado.rol === 'Empleado') 
+      {
+        <h3 class="form-title">Nuevo Empleado</h3>
+      }
       <div class="form-container">
         <div class="form">
           <label>Usuario:
@@ -86,4 +112,4 @@
       </div>
     </div>
   </div>
-  
+}
