@@ -32,8 +32,9 @@
   <body class="modal-abierto"></body>
   <div class="modal">
     <div class="form-modal">
-      <h2 class="form-title">Productos</h2>
-
+      <h2 class="form-title">
+        {{ selectedProducto ? 'Editar Producto' : 'Añadir Producto' }}
+      </h2>
       <form (ngSubmit)="saveProducto()" class="form-container">
         <label>
           Nombre del producto:

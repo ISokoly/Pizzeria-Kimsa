@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <button class="create-btn" (click)="abrirFormulario()">Crear Nueva Categoría</button>
+    <button class="create-btn" (click)="abrirFormulario()">Añadir Nueva Categoría</button>
   </div>
 </div>
 
@@ -40,7 +40,7 @@
 <div class="modal">
   <div class="form-modal">
     <h2 class="form-title">
-      {{ selectedCategoria ? 'Editar Categoría' : 'Crear Categoría' }}
+      {{ selectedCategoria ? 'Editar Categoría' : 'Añadir Categoría' }}
     </h2>
     <form (ngSubmit)="saveCategoria()" class="form-container">
       <label>

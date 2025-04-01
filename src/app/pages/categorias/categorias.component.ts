@@ -91,9 +91,8 @@ export class CategoriasComponent implements OnInit {
       }
 
       if (this.selectedCategoria) {
-        if (!this.imagePreview && this.formData.imagen === this.selectedCategoria.imagen) {
-          alert('Seleccione una imagen');
-          return;
+        if (!this.imagePreview && this.selectedCategoria && this.selectedCategoria.imagen) {
+          this.formData.imagen = this.selectedCategoria.imagen;
         }
 
         const nombreAnterior = this.selectedCategoria.nombre;

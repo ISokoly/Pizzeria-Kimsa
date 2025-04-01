@@ -70,15 +70,15 @@
   <div class="modal">
     <div class="form-modal">
       @if (userSeleccionado) {
-        <h3 class="form-title">Editar Usuario</h3>
+        <h2 class="form-title">Editar Usuario</h2>
       }
       @else if (nuevoEmpleado.rol === 'Administrador') 
       {
-        <h3 class="form-title">Nuevo Administrador</h3>
+        <h2 class="form-title">Nuevo Administrador</h2>
       }
       @else if (nuevoEmpleado.rol === 'Empleado') 
       {
-        <h3 class="form-title">Nuevo Empleado</h3>
+        <h2 class="form-title">Nuevo Empleado</h2>
       }
       <div class="form-container">
         <div class="form">

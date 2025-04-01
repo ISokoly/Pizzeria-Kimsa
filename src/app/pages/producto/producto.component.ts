@@ -179,11 +179,10 @@ export class ProductoComponent implements OnInit {
   }
 
   saveProducto(): void {
-    if (!this.imagePreview && this.formData.imagen) {
-      alert('Seleccione una imagen');
-      return;
+    if (!this.imagePreview && this.selectedProducto && this.selectedProducto.imagen) {
+      this.formData.imagen = this.selectedProducto.imagen;
     }
-
+    
     if (!this.marcado) {
       this.formData.id_marca = null;
     }
