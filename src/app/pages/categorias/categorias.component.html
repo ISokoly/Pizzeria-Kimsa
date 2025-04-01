@@ -45,12 +45,12 @@
     <form (ngSubmit)="saveCategoria()" class="form-container">
       <label>
         Nombre de la categoría:
-        <input type="text" [(ngModel)]="formData.nombre" name="nombre" required class="form-input">
+        <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre de la categoria" required class="form-input">
       </label>
 
       <label>
         Descripción:
-        <textarea [(ngModel)]="formData.descripcion" name="descripcion" required class="form-input"></textarea>
+        <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required class="form-input"></textarea>
       </label>
 
       <label>

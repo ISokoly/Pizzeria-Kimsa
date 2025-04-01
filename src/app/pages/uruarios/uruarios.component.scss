@@ -38,6 +38,31 @@ h1, h2 {
     background-color: $color-bg;
 }
 
+.password-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .password-container::before {
+    content: "******"; /* Muestra los asteriscos por defecto */
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+    pointer-events: none;
+    font-size: 16px;
+  }
+  
+  .password-container input {
+    padding-left: 50px; /* Asegura que el texto no se sobreponga */
+  }
+  
+  .password-container input:focus + ::before,
+  .password-container input:not(:placeholder-shown) + ::before {
+    content: ""; /* Oculta los asteriscos cuando el usuario escribe */
+  }
+  
 .contenedor {
     padding-bottom: 3rem;
 }

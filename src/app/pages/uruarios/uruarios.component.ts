@@ -94,7 +94,6 @@ export class UruariosComponent implements OnInit {
     };
   }
   
-
   cerrarFormulario(): void {
     this.mostrarFormulario = false;
     this.nuevoEmpleado = { usuario: '', nombre: '', apellido: '', dni: '', direccion: '', telefono: '', contrasena: '', rol:'' };
@@ -113,7 +112,7 @@ export class UruariosComponent implements OnInit {
             this.usuario = { ...this.usuario, ...this.nuevoEmpleado };
             localStorage.setItem('usuario', JSON.stringify(this.usuario)); // Guardar cambios en localStorage
           }
-  
+
           this.cerrarFormulario();
   
           // Esperar un momento antes de recargar
