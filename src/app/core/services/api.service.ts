@@ -157,10 +157,16 @@ export class ApiService {
   }
 
   // Subir imágenes
-  uploadImage(file: File): Observable<{ filePath: string }> {
+  uploadImage(file: File, name: string, tipo: string, categoria?: string): Observable<{ filePath: string }> {
     const formData = new FormData();
+    formData.append('nombre', name);
+    formData.append('tipo', tipo);
+    if (categoria) {
+      formData.append('categoria', categoria);
+    }
     formData.append('image', file);
 
+  
     return this.http.post<{ filePath: string }>(`${this.apiUrl}/upload`, formData);
   }
 

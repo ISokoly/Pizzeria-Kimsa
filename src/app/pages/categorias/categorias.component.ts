@@ -60,13 +60,17 @@ export class CategoriasComponent implements OnInit {
         };
       };
       reader.readAsDataURL(file);
-
-      this.apiService.uploadImage(file).subscribe(response => {
+  
+      const nombre = this.formData.nombre;
+      const tipo = 'categorias';
+  
+      this.apiService.uploadImage(file, nombre, tipo).subscribe(response => {
         this.formData.imagen = response.filePath;
       });
     }
   }
-
+  
+  
   saveCategoria(): void {
     if (!this.mostrarFormulario) return;
 
@@ -107,6 +111,7 @@ export class CategoriasComponent implements OnInit {
           }
 
           this.resetForm();
+          location.reload();
         });
 
       } else {
@@ -116,6 +121,7 @@ export class CategoriasComponent implements OnInit {
           }
           this.loadCategorias();
           this.resetForm();
+          location.reload();
         });
       }
 

@@ -48,27 +48,32 @@ export class ProductoComponent implements OnInit {
     this.loadTiposMarcas();
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = () => {
-          this.isVertical = img.height > img.width;
-          this.imagePreview = img.src;
-        };
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        this.isVertical = img.height > img.width;
+        this.imagePreview = img.src;
       };
-      reader.readAsDataURL(file);
+    };
+    reader.readAsDataURL(file);
 
-      // Subir la imagen sin afectar la lógica anterior
-      this.apiService.uploadImage(file).subscribe(response => {
-        this.formData.imagen = response.filePath;
-      });
-    }
+    // Asegúrate de enviar también `tipo` y `categoria`
+    const nombre = this.formData.nombre;
+    const tipo = 'productos'; // Asegúrate de que esto existe y es "producto"
+    const categoria = this.nombreCategoria; // Asegúrate de que esto existe
+
+    this.apiService.uploadImage(file, nombre, tipo, categoria).subscribe(response => {
+      this.formData.imagen = response.filePath;
+    });
   }
+}
 
+  
   cancelEditProducto(): void {
     this.selectedProducto = null;
     this.resetForm();
@@ -195,6 +200,7 @@ export class ProductoComponent implements OnInit {
       console.log(this.selectedProducto ? 'Producto actualizado' : 'Producto creado', this.formData);
       this.loadProductos();
       this.resetForm();
+      location.reload();
     });
 
     this.mostrarFormularioProducto = false;
@@ -286,12 +292,15 @@ export class ProductoComponent implements OnInit {
         console.log('Marca actualizada:', this.formMarca);
         this.loadMarcas();
         this.cerrarFormularioMarca();
+        location.reload();
+
       });
     } else {
       this.apiService.createMarca(this.formMarca).subscribe(() => {
         console.log('Marca creada:', this.formMarca);
         this.loadMarcas();
         this.cerrarFormularioMarca();
+        location.reload();
       });
     }
   }
