@@ -35,7 +35,9 @@ body {
  
 };
 
-
+.mat-drawer-inner-container{
+  overflow: hidden !important;
+}
 
 :root {
   @include mat.list-overrides((

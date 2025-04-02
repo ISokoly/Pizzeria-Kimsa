@@ -21,6 +21,7 @@ export type MenuItem={
       <p>Pastas y Pizzas</p>
     </div>
   </div>
+<br><br>
   <mat-nav-list>
     @for (item of menuItems(); track $index) {
       <a  class="menu-item">
@@ -91,9 +92,12 @@ export type MenuItem={
     }
     .selected-menu-item {
       border-left: 5px solid #D32F2F; /* Borde rojo tomate al seleccionar */
-      background-color: rgba(221, 44, 44, 0.3); /* Fondo suave rojo para los elementos seleccionados */
+      background-color: rgba(221, 44, 44, 0.4);
       border-color: #D32F2F; /* Borde rojo cuando se selecciona */
-}
+    }
+    .selected-menu-item:hover{
+        background-color: rgba(221, 44, 44, 0.4);
+      }
   `
 })
 export class MenuComponent {

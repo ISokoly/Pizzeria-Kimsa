@@ -23,8 +23,9 @@ const Usuario = {
   update: async (id, data, callback) => {
     try {
       if (data.contrasena) {
-        // 🔒 Encripta la contraseña si está presente
-        data.contrasena = await bcrypt.hash(data.contrasena, 10);
+        data.contrasena = await bcrypt.hash(data.contrasena, 10); // Solo encripta si hay una nueva contraseña
+      } else {
+        delete data.contrasena; // Si está vacía, la eliminamos para que no sobrescriba la actual
       }
   
       let query = 'UPDATE usuarios SET ';

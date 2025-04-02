@@ -101,7 +101,18 @@
             <input type="text" class="form-input" placeholder="Escriba el telefono del Usuario" [(ngModel)]="nuevoEmpleado.telefono" autocomplete="off">
           </label>
           <label>Contraseña:
-            <input type="password" class="form-input" name="contrasena" [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
+            @if (userSeleccionado) {
+              <input 
+              type="password" 
+              class="form-input" 
+              placeholder="*********" 
+              [ngModel]="userSeleccionado ? '' : nuevoEmpleado.contrasena" 
+              (ngModelChange)="nuevoEmpleado.contrasena = $event" 
+              autocomplete="new-password">            
+            }
+            @else {
+              <input type="password" class="form-input" placeholder="Escriba la contraseña" [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
+            }
           </label>
         </div>
   

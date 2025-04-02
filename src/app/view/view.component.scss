@@ -4,6 +4,7 @@ mat-toolbar {
   box-shadow: var(--mat-sys-level3);
   background: #07603A;
   color: white;
+  transition: width 0.3s ease-in-out;
 }
 
 button[mat-icon-button] {
@@ -12,6 +13,7 @@ button[mat-icon-button] {
   cursor: pointer;
   border-radius: 50%;
   transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+  color: white;
 
   &:hover {
     background-color: #76C7A0;
@@ -29,12 +31,14 @@ mat-sidenav-container {
 
 mat-sidenav {
   border-radius: 0;
-  background: #E4FF8E; /* Verde pastel */
-  transition: width 0.3s ease-in-out;
+  background: #e5ff8e8e; /* Verde pastel */
+  transition: width 0.3s ease-in-out !important;
+  border: 3px solid;
+  border-color: #07603A;
 }
 
 mat-sidenav-content {
-  transition: margin-left 0.3s ease-in-out;
+  transition: margin-left 0.3s ease-in-out !important;
 }
 
 .example-spacer {

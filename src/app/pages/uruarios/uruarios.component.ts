@@ -112,7 +112,9 @@ export class UruariosComponent implements OnInit {
             this.usuario = { ...this.usuario, ...this.nuevoEmpleado };
             localStorage.setItem('usuario', JSON.stringify(this.usuario)); // Guardar cambios en localStorage
           }
-
+          if (this.userSeleccionado && this.userSeleccionado.contrasena) {
+            this.nuevoEmpleado.contrasena = this.userSeleccionado.contrasena;
+          }
           this.cerrarFormulario();
   
           // Esperar un momento antes de recargar
@@ -137,7 +139,6 @@ export class UruariosComponent implements OnInit {
       );
     }
   }
-  
 
   editarUsuario(usuario: any): void {
     this.userSeleccionado = { ...usuario };
