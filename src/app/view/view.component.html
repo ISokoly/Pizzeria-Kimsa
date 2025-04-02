@@ -5,10 +5,13 @@
 
   <span class="example-spacer"></span>
 
-  <button mat-button class="usuario-btn" (click)="irAUsuarios()">
-    <mat-icon>account_circle</mat-icon>
-    Bienvenido: {{ usuarioNombre }}
-  </button>
+  <button mat-button 
+  class="usuario-btn" 
+  [ngClass]="{ 'selected-button': isUsuariosPage }"
+  (click)="irAUsuarios()">
+<mat-icon>account_circle</mat-icon>
+Bienvenido: {{ usuarioNombre }}
+</button>
 
   <span class="example-spacer"></span>
 

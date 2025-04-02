@@ -5,7 +5,6 @@
 @include mat.app-background();
 
 html{
-  //ng color-scheme: light dark;
   color-scheme: light;
   @include mat.theme((
     color: (
@@ -18,15 +17,13 @@ html{
   
 }
 
+textarea{
+  margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 .dark{
   color-scheme: dark;
 }
-/*:root {
-  @include mat.list-overrides((
-    active-indicator-color: orange,
-    list-item-selected-trailing-icon-color:red
-  ));
-}*/
 
 html, body { height: 100%; }
 body { 
@@ -44,9 +41,6 @@ body {
     active-indicator-shape:none,
   ));
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

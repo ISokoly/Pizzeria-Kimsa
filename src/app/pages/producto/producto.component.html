@@ -38,12 +38,12 @@
       <form (ngSubmit)="saveProducto()" class="form-container">
         <label>
           Nombre del producto:
-          <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre del producto" required class="form-input">
+          <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre del producto" required autocomplete="off" class="form-input">
         </label>
 
         <label>
           Descripción:
-          <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required  class="form-input"></textarea>
+          <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required class="form-input"></textarea>
         </label>
 
         <div *ngIf="marcado" class="marca-container">
@@ -106,7 +106,7 @@
         <form (ngSubmit)="saveMarca()" class="form-container">
           <label>
             Nombre de la marca:
-            <input type="text" [(ngModel)]="formMarca.nombre" name="nombre" placeholder="Escriba el nombre de la marca" required class="form-input">
+            <input type="text" [(ngModel)]="formMarca.nombre" name="nombre" placeholder="Escriba el nombre de la marca" required autocomplete="off" class="form-input">
           </label>
 
           <label>

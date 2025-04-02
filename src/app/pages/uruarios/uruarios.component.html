@@ -1,60 +1,62 @@
 <div class="contenedor">
   <div class="usuarios-container">
     @if(usuario?.rol === 'Administrador'){
-      <h1>Administrador de la pizzería</h1>
+    <h1>Administrador de la pizzería</h1>
     }
     @else if(usuario?.rol === 'Empleado'){
-      <h1>Perfil del Empleado</h1>
+    <h1>Perfil del Empleado</h1>
     }
 
-  <div class="info-admin">
-    <p><strong>Usuario:</strong> {{ usuario?.usuario }}</p>
-    <p><strong>Nombre:</strong> {{ usuario?.nombre }}</p>
-    <p><strong>Apellido:</strong> {{ usuario?.apellido }}</p>
-    <p><strong>Rol:</strong> {{ usuario?.rol }}</p>
-    <p><strong>DNI:</strong> {{ usuario?.dni }}</p>
-    <p><strong>Dirección:</strong> {{ usuario?.direccion }}</p>
-    <p><strong>Teléfono:</strong> {{ usuario?.telefono }}</p>
-    <button class="btn-verde" (click)="editarUsuario(usuario)">Editar usuario</button>
-    <button class="btn-rojo" (click)="eliminarUsuario(usuario.id_usuario)">Eliminar usuario</button>
+    <div class="info-admin">
+      <p><strong>Usuario:</strong> {{ usuario?.usuario }}</p>
+      <p><strong>Nombre:</strong> {{ usuario?.nombre }}</p>
+      <p><strong>Apellido:</strong> {{ usuario?.apellido }}</p>
+      <p><strong>Rol:</strong> {{ usuario?.rol }}</p>
+      <p><strong>DNI:</strong> {{ usuario?.dni }}</p>
+      <p><strong>Dirección:</strong> {{ usuario?.direccion }}</p>
 
-  </div>
 
-  <!-- Contenido solo para administradores -->
-  <h2>Otros Administradores</h2>
-  @if(usuario?.rol === 'Administrador'){
+      <p><strong>Teléfono:</strong> {{ usuario?.telefono }}</p>
+      <button class="btn-verde" (click)="editarUsuario(usuario)">Editar usuario</button>
+      <button class="btn-rojo" (click)="eliminarUsuario(usuario.id_usuario)">Eliminar usuario</button>
 
-  <div class="info-admin">
-    
-    <div class="empleados">
-      @for(administrador of administradores; track $index){
+    </div>
+
+    <!-- Contenido solo para administradores -->
+    <h2>Otros Administradores</h2>
+    @if(usuario?.rol === 'Administrador'){
+
+    <div class="info-admin">
+
+      <div class="empleados">
+        @for(administrador of administradores; track $index){
         <ng-container>
           @if(administrador.id_usuario !== usuario?.id_usuario) {
-            <div class="empleado-card">
-              <p><strong>Usuario:</strong> {{ administrador.usuario }} <strong>Rol:</strong> {{ administrador.rol }}</p>
-              <button class="btn-amarillo" (click)="editarUsuario(administrador)">Editar usuario</button>
-              <button class="btn-rojo" (click)="eliminarUsuario(administrador.id_usuario)">Eliminar usuario</button>
-            </div>
+          <div class="empleado-card">
+            <p><strong>Usuario:</strong> {{ administrador.usuario }} <strong>Rol:</strong> {{ administrador.rol }}</p>
+            <button class="btn-amarillo" (click)="editarUsuario(administrador)">Editar usuario</button>
+            <button class="btn-rojo" (click)="eliminarUsuario(administrador.id_usuario)">Eliminar usuario</button>
+          </div>
           }
         </ng-container>
-      }
+        }
+      </div>
+      <button class="btn-azul" (click)="abrirFormulario('Administrador')">
+        <mat-icon>add</mat-icon> Añadir Administrador
+      </button>
     </div>
-    <button class="btn-azul" (click)="abrirFormulario('Administrador')">
-      <mat-icon>add</mat-icon> Añadir Administrador
-    </button>
-  </div>
 
-  <h2>Empleados de la pizzería</h2>
+    <h2>Empleados de la pizzería</h2>
 
     <div class="info-admin">
       <div class="empleados">
 
         @for(empleado of empleados; track $index){
-            <div class="empleado-card">
-              <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Rol:</strong> {{ empleado.rol }}</p>
-              <button class="btn-amarillo" (click)="editarUsuario(empleado)">Editar usuario</button>
-              <button class="btn-rojo" (click)="eliminarUsuario(empleado.id_usuario)">Eliminar usuario</button>
-            </div>
+        <div class="empleado-card">
+          <p><strong>Usuario:</strong> {{ empleado.usuario }} <strong>Rol:</strong> {{ empleado.rol }}</p>
+          <button class="btn-amarillo" (click)="editarUsuario(empleado)">Editar usuario</button>
+          <button class="btn-rojo" (click)="eliminarUsuario(empleado.id_usuario)">Eliminar usuario</button>
+        </div>
         }
       </div>
 
@@ -62,65 +64,68 @@
         <mat-icon>add</mat-icon> Añadir Empleado
       </button>
     </div>
-  }
-</div>
+    }
+  </div>
 </div>
 <!-- Modal para agregar empleados (solo administradores) -->
 @if(mostrarFormulario){
-  <div class="modal">
-    <div class="form-modal">
-      @if (userSeleccionado) {
-        <h2 class="form-title">Editar Usuario</h2>
-      }
-      @else if (nuevoEmpleado.rol === 'Administrador') 
-      {
-        <h2 class="form-title">Nuevo Administrador</h2>
-      }
-      @else if (nuevoEmpleado.rol === 'Empleado') 
-      {
-        <h2 class="form-title">Nuevo Empleado</h2>
-      }
-      <div class="form-container">
-        <div class="form">
-          <label>Usuario:
-            <input type="text" class="form-input" name="usuario" placeholder="Escriba el Usuario" [(ngModel)]="nuevoEmpleado.usuario" autocomplete="off">
-          </label>
-          <label>Nombre:
-            <input type="text" class="form-input" placeholder="Escriba los nombres del Usuario" [(ngModel)]="nuevoEmpleado.nombre" autocomplete="off">
-          </label>
-          <label>Apellido:
-            <input type="text" class="form-input" placeholder="Escriba los apellidos del Usuario" [(ngModel)]="nuevoEmpleado.apellido" autocomplete="off">
-          </label>
-          <label>DNI:
-            <input type="text" class="form-input" placeholder="Escriba el DNI Usuario" [(ngModel)]="nuevoEmpleado.dni" autocomplete="off">
-          </label>
-          <label>Dirección:
-            <input type="text" class="form-input" placeholder="Escriba la direccion del Usuario" [(ngModel)]="nuevoEmpleado.direccion" autocomplete="off">
-          </label>
-          <label>Teléfono:
-            <input type="text" class="form-input" placeholder="Escriba el telefono del Usuario" [(ngModel)]="nuevoEmpleado.telefono" autocomplete="off">
-          </label>
-          <label>Contraseña:
-            @if (userSeleccionado) {
-              <input 
-              type="password" 
-              class="form-input" 
-              placeholder="*********" 
-              [ngModel]="userSeleccionado ? '' : nuevoEmpleado.contrasena" 
-              (ngModelChange)="nuevoEmpleado.contrasena = $event" 
-              autocomplete="new-password">            
-            }
-            @else {
-              <input type="password" class="form-input" placeholder="Escriba la contraseña" [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
-            }
-          </label>
-        </div>
-  
-        <div class="botones">
-          <button class="form-btn-verde" (click)="guardarEmpleado()">Guardar</button>
-          <button class="form-btn-gris" (click)="cerrarFormulario()">Cancelar</button>
-        </div>
+<div class="modal">
+  <div class="form-modal">
+    @if (userSeleccionado) {
+    <h2 class="form-title">Editar Usuario</h2>
+    }
+    @else if (nuevoEmpleado.rol === 'Administrador')
+    {
+    <h2 class="form-title">Nuevo Administrador</h2>
+    }
+    @else if (nuevoEmpleado.rol === 'Empleado')
+    {
+    <h2 class="form-title">Nuevo Empleado</h2>
+    }
+    <div class="form-container">
+      <div class="form">
+        <label>Usuario:
+          <input type="text" class="form-input" name="usuario" placeholder="Escriba el Usuario"
+            [(ngModel)]="nuevoEmpleado.usuario" autocomplete="off">
+        </label>
+        <label>Nombre:
+          <input type="text" class="form-input" placeholder="Escriba los nombres del Usuario"
+            [(ngModel)]="nuevoEmpleado.nombre" autocomplete="off">
+        </label>
+        <label>Apellido:
+          <input type="text" class="form-input" placeholder="Escriba los apellidos del Usuario"
+            [(ngModel)]="nuevoEmpleado.apellido" autocomplete="off">
+        </label>
+        <label>DNI:
+          <input type="text" class="form-input" placeholder="Escriba el DNI Usuario" [(ngModel)]="nuevoEmpleado.dni"
+            autocomplete="off">
+        </label>
+        <label>Dirección:
+          <input type="text" class="form-input" placeholder="Escriba la direccion del Usuario"
+            [(ngModel)]="nuevoEmpleado.direccion" autocomplete="off">
+        </label>
+        <label>Teléfono:
+          <input type="text" class="form-input" placeholder="Escriba el telefono del Usuario"
+            [(ngModel)]="nuevoEmpleado.telefono" autocomplete="off">
+        </label>
+        <label>Contraseña:
+          @if (userSeleccionado) {
+          <input type="password" class="form-input" placeholder="*********"
+            [ngModel]="userSeleccionado ? '' : nuevoEmpleado.contrasena"
+            (ngModelChange)="nuevoEmpleado.contrasena = $event" autocomplete="new-password">
+          }
+          @else {
+          <input type="password" class="form-input" placeholder="Escriba la contraseña"
+            [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
+          }
+        </label>
+      </div>
+
+      <div class="botones">
+        <button class="form-btn-verde" (click)="guardarEmpleado()">Guardar</button>
+        <button class="form-btn-gris" (click)="cerrarFormulario()">Cancelar</button>
       </div>
     </div>
   </div>
+</div>
 }

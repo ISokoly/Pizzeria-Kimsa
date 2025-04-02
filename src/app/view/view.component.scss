@@ -2,13 +2,14 @@ mat-toolbar {
   position: relative;
   z-index: 5;
   box-shadow: var(--mat-sys-level3);
-  background: #07603A;
+  background: #05492C;
   color: white;
   transition: width 0.3s ease-in-out;
-}
+  border: 3px solid;
+  border-color: #032D1B;}
 
 button[mat-icon-button] {
-  background-color: #409470;
+  background-color: #307055;
   border: none;
   cursor: pointer;
   border-radius: 50%;
@@ -31,10 +32,10 @@ mat-sidenav-container {
 
 mat-sidenav {
   border-radius: 0;
-  background: #e5ff8e8e; /* Verde pastel */
+  background: #6e0018; /* Verde pastel */
   transition: width 0.3s ease-in-out !important;
   border: 3px solid;
-  border-color: #07603A;
+  border-color: #3a000d;
 }
 
 mat-sidenav-content {
@@ -57,17 +58,22 @@ mat-sidenav-content {
   transition: color 0.3s ease-in-out;
 
   &:hover {
-    color: #ccffd2; /* Verde pastel */
+    background-color: #76C7A0;
+    transform: scale(1.1);
+  }
+  mat-icon {
+    margin-right: 5px;
+    color: white;
   }
 }
 
-.usuario-btn mat-icon {
-  margin-right: 5px;
-  color: white;
+.selected-button {
+  border: 2px solid white; /* Borde blanco cuando está seleccionado */
+  background-color: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
 }
 
 button[mat-button] {
-  background-color: #409470;
+  background-color: #307055;
   color: white;
   border-radius: 5px;
   padding: 6px 12px;
@@ -75,6 +81,6 @@ button[mat-button] {
 
   &:hover {
     background-color: #76C7A0;
-    transform: scale(1.05);
+    transform: scale(1.1);
   }
 }
