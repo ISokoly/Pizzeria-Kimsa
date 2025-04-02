@@ -4,29 +4,47 @@ const mysql = require('mysql2');
 const multer = require('multer');
 const bcrypt = require('bcrypt'); // Para encriptar contraseñas
 const path = require('path'); // <-- Asegúrate de importar esto
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Servir imágenes
+app.use(express.urlencoded({ extended: true }));
 
-// Configuración de almacenamiento con Multer
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Configuración de almacenamiento con Multe
+// Configuración de la conexión a MySQL
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Carpeta donde se guardarán las imágenes
+  destination: (req, file, cb) => {
+    const tipo = req.body.tipo; // "producto" o "categoria"
+    const categoria = req.body.categoria; // Nombre de la categoría si es un producto
+
+    let uploadPath = 'uploads';
+
+    if (tipo === 'productos' && categoria) {
+      uploadPath = `uploads/productos/${categoria}`;
+    } else if (tipo === 'categorias') {
+      uploadPath = 'uploads/categorias';
+    }
+
+    // Crear la carpeta si no existe
+    fs.mkdirSync(uploadPath, { recursive: true });
+
+    cb(null, uploadPath);
   },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const fileName = Date.now() + ext;
-    cb(null, fileName);
+  filename: (req, file, cb) => {
+    const nombreArchivo = req.body.nombre || 'imagen'; // Usa el nombre enviado desde el frontend
+    const extension = path.extname(file.originalname);
+    cb(null, nombreArchivo + extension);
   }
 });
 
 const upload = multer({ storage });
 
-// Configuración de la conexión a MySQL
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -34,19 +52,15 @@ const connection = mysql.createConnection({
   database: 'pizzeria'
 });
 
-// Conectar a MySQL y crear la base de datos y tablas si no existen
 connection.connect(async (err) => {
   if (err) throw err;
-  // Crear base de datos si no existe
   await connection.promise().query('CREATE DATABASE IF NOT EXISTS pizzeria');
 
   console.log('✅ Base de datos `pizzeria` creada o ya existe');
 
-  // Seleccionar la base de datos
   await connection.promise().query('USE pizzeria');
   console.log('✅ Usando base de datos `pizzeria`');
 
-  // Crear tablas si no existen
   const queries = [
     
     `CREATE TABLE IF NOT EXISTS tipos_marcas (
@@ -135,9 +149,19 @@ app.use('/api', tiposMarcaRoutes);
 
 // Ruta para subir imágenes
 app.post('/api/upload', upload.single('image'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ message: 'No se envió una imagen' });
+  if (!req.file) {
+    return res.status(400).json({ message: 'No se envió una imagen' });
+  }
 
-  const imageUrl = `http://localhost:${port}/uploads/${req.file.filename}`;
+  const tipo = req.body.tipo;
+  const categoria = req.body.categoria;
+  let imageUrl = `http://localhost:${port}/uploads`;
+
+  if (tipo === 'productos' && categoria) {
+    imageUrl += `/productos/${categoria}/${req.file.filename}`;
+  } else if (tipo === 'categorias') {
+    imageUrl += `/categorias/${req.file.filename}`;
+  }
 
   res.json({ filePath: imageUrl });
 });
