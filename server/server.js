@@ -48,6 +48,11 @@ connection.connect(async (err) => {
 
   // Crear tablas si no existen
   const queries = [
+    
+    `CREATE TABLE IF NOT EXISTS tipos_marcas (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nombre VARCHAR(255) NOT NULL UNIQUE
+    )`,
     `CREATE TABLE IF NOT EXISTS categorias (
       id INT AUTO_INCREMENT PRIMARY KEY,
       nombre VARCHAR(255) NOT NULL,
@@ -71,11 +76,6 @@ connection.connect(async (err) => {
       nombre VARCHAR(255) NOT NULL,
       tipos_marcas INT NOT NULL,
       FOREIGN KEY (tipos_marcas) REFERENCES tipos_marcas(id)
-    )`,
-
-    `CREATE TABLE IF NOT EXISTS tipos_marcas (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      nombre VARCHAR(255) NOT NULL UNIQUE
     )`,
 
     `CREATE TABLE IF NOT EXISTS productos (
