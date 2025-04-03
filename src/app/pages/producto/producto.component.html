@@ -48,17 +48,8 @@
         <div *ngIf="marcado" class="marca-container">
           <label>
             Marca:
-            <input
-              [(ngModel)]="selectedMarcaNombre"
-              name="id_marca"
-              type="text"
-              (input)="filtrarMarcas()"
-              (focus)="mostrarListaMarcas()"
-              (blur)="ocultarListaConRetraso()"
-              placeholder="Escriba o seleccione una marca"
-              class="form-input"
-              autocomplete="off"
-            />
+            <input [(ngModel)]="selectedMarcaNombre" name="id_marca" type="text" (input)="filtrarMarcas()" (focus)="mostrarListaMarcas()" (blur)="ocultarListaConRetraso()" 
+              placeholder="Escriba o seleccione una marca" class="form-input" autocomplete="off"/>
           </label>
           <ul *ngIf="mostrarLista" class="marcas-lista">
             <li

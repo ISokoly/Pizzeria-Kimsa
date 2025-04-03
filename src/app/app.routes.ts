@@ -6,6 +6,7 @@ import { ViewComponent } from './view/view.component';
 import { UruariosComponent } from './pages/uruarios/uruarios.component';
 import { AuthGuard } from './core/guard/auth.guard';
 import { VentasComponent } from './pages/ventas/ventas.component';
+import { EstadisticasComponent } from './estadisticas/estadisticas.component';
 
 const usuarioGuardado = localStorage.getItem('usuario');
 const redireccionInicial = usuarioGuardado ? 'view' : 'login';
@@ -25,6 +26,7 @@ export const routes: Routes = [
       { path: 'categoria', component: CategoriasComponent },
       { path: 'categoria/producto/:nombreCategoria', component: ProductoComponent },
       { path: 'ventas', component: VentasComponent },
+      { path: 'estadisticas', component: EstadisticasComponent },
       { path: 'usuarios', component: UruariosComponent }
     ]
   },

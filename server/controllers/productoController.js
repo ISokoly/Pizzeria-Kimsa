@@ -43,15 +43,7 @@ const eliminarImagenHuerfana = (imagen, categoria) => {
   const imagenRuta = path.join(__dirname, '../uploads/productos/', categoria, imagenNombre);
 
   if (fs.existsSync(imagenRuta)) {
-    console.log(`🗑️ Intentando eliminar imagen: ${imagenRuta}`);
-    try {
       fs.unlinkSync(imagenRuta);
-      console.log(`🗑️ Imagen huérfana eliminada: ${imagenRuta}`);
-    } catch (error) {
-      console.error(`❌ Error al eliminar imagen: ${imagenRuta}`, error);
-    }
-  } else {
-    console.log(`❌ Imagen no encontrada: ${imagenRuta}`);
   }
 };
 
