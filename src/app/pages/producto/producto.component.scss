@@ -168,7 +168,6 @@ body.modal-abierto {
 .form label {
   display: flex;
   flex-direction: column;
-  font-weight: bold;
   color: #333;
   font-size: 14px;
   margin-bottom: 12px;
@@ -296,7 +295,7 @@ body.modal-abierto {
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .category-name {
+    .product-name {
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;

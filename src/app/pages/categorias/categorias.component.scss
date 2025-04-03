@@ -47,14 +47,6 @@ $color-bg: #f9f9f9;
   border-radius: 20px;
 }
 
-.admin-panel {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px;
-  align-items: start;
-}
-
 h1, h2 {
   color: #0b6e4f;
   border-bottom: 2px dashed #0b6e4f;
@@ -241,7 +233,7 @@ body.modal-abierto {
 }
 
 // 📋 Lista de productos y categorías
-.products-container {
+.categoria-container {
   grid-column: span 4;
 
   .products-grid {

@@ -1,41 +1,36 @@
 <div class="contenedor">
   <div class="categoria-container">
-    <div class="admin-panel">
-      <div class="products-container">
-        <h1>Categorías de la pizzería</h1>
+    <h1>Categorías de la pizzería</h1>
 
-        <div class="products-grid">
-          @for (categoria of categorias; track $index) {
-          <div class="product-item">
-            <h2 class="category-name" (click)="verProductos(categoria.nombre, categoria.marca)"
-              style="cursor: pointer;">
-              {{ categoria.nombre }}
-            </h2>
-            @if (categoria.imagen) {
-            <div class="img-container"
-              [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }"
-              (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
-              <img [src]="categoria.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
-                alt="Imagen de la Categoría" class="preview-img">
-            </div>
-            }
-            <h4 class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)"
-              style="cursor: pointer;">
-              {{ categoria.descripcion }}
-            </h4>
-            <div class="actions">
-              <button (click)="editCategoria(categoria)" class="edit-btn">Editar</button>
-              <button (click)="deleteCategoria(categoria.id, categoria.nombre)" class="delete-btn">Eliminar</button>
-            </div>
-          </div>}
+    <div class="products-grid">
+      @for (categoria of categorias; track $index) {
+      <div class="product-item">
+        <h2 class="category-name" (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
+          {{ categoria.nombre }}
+        </h2>
+        @if (categoria.imagen) {
+        <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }"
+          (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
+          <img [src]="categoria.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
+            alt="Imagen de la Categoría" class="preview-img">
         </div>
-      </div>
+        }
+        <p class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)"
+          style="cursor: pointer;">
+          {{ categoria.descripcion }}
+        </p>
+        <div class="actions">
+          <button (click)="editCategoria(categoria)" class="edit-btn">Editar</button>
+          <button (click)="deleteCategoria(categoria.id, categoria.nombre)" class="delete-btn">Eliminar</button>
+        </div>
+      </div>}
     </div>
     <button class="create-btn" (click)="abrirFormulario()">Añadir Nueva Categoría</button>
   </div>
 </div>
 
 @if (mostrarFormulario) {
+
 <body class="modal-abierto"></body>
 <div class="modal">
   <div class="form-modal">
@@ -45,12 +40,14 @@
     <form (ngSubmit)="saveCategoria()" class="form-container">
       <label>
         Nombre de la categoría:
-        <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre de la categoria" required autocomplete="off" class="form-input">
+        <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre de la categoria"
+          required autocomplete="off" class="form-input">
       </label>
 
       <label>
         Descripción:
-        <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required class="form-input"></textarea>
+        <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required
+          class="form-input"></textarea>
       </label>
       <label>
         Imagen:

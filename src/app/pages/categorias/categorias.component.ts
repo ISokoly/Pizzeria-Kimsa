@@ -15,7 +15,6 @@ import { Router, RouterModule } from '@angular/router';
 export class CategoriasComponent implements OnInit {
   isVertical: boolean = false;
   tiposMarcas: any[] = [];
-
   categorias: any[] = [];
   formData = { nombre: '', descripcion: '', imagen: '', marca: false };
   selectedCategoria: any = null;
@@ -60,25 +59,26 @@ export class CategoriasComponent implements OnInit {
         };
       };
       reader.readAsDataURL(file);
-  
+
       const nombre = this.formData.nombre;
       const tipo = 'categorias';
-  
+
       this.apiService.uploadImage(file, nombre, tipo).subscribe(response => {
         this.formData.imagen = response.filePath;
       });
     }
   }
-  
-  
-  saveCategoria(): void {
-    if (!this.mostrarFormulario) return;
 
+
+  saveCategoria(): void {
     const nombreCategoria = this.formData.nombre?.trim();
-  
+
     if (!nombreCategoria) {
       alert('El nombre de la categoría no puede estar vacío.');
       return;
+    }
+    if (!this.imagePreview && this.selectedCategoria && this.selectedCategoria.imagen) {
+      this.formData.imagen = this.selectedCategoria.imagen;
     }
 
     this.apiService.getCategorias().subscribe((categorias: any[]) => {
@@ -86,7 +86,7 @@ export class CategoriasComponent implements OnInit {
 
       const existeOtraCategoria = this.categorias.some(cat =>
         cat.nombre.toLowerCase() === nombreCategoria.toLowerCase() &&
-        (!this.selectedCategoria || cat.id !== this.selectedCategoria.id)
+        (!this.selectedCategoria || cat.id !== this.selectedCategoria.id) // Comparación por ID
       );
 
       if (existeOtraCategoria) {
@@ -95,23 +95,21 @@ export class CategoriasComponent implements OnInit {
       }
 
       if (this.selectedCategoria) {
-        if (!this.imagePreview && this.selectedCategoria && this.selectedCategoria.imagen) {
-          this.formData.imagen = this.selectedCategoria.imagen;
-        }
-
         const nombreAnterior = this.selectedCategoria.nombre;
-        const marcaAnterior = this.selectedCategoria.marca;
+        const marcaAnterior = this.selectedCategoria.marca; // Estado anterior de 'marca'
 
         this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
           this.loadCategorias();
           this.updateTiposMarcaIfExists(nombreAnterior, nombreCategoria);
 
+          // Si antes 'marca' era falso y ahora es verdadero, intentar crear tipos_marcas
           if (!marcaAnterior && this.formData.marca) {
             this.createTiposMarcaIfNotExists(nombreCategoria);
           }
 
           this.resetForm();
           location.reload();
+
         });
 
       } else {
@@ -127,19 +125,6 @@ export class CategoriasComponent implements OnInit {
 
       this.mostrarFormulario = false;
     });
-  }
-
-  editCategoria(categoria: any): void {
-    this.selectedCategoria = categoria;
-    this.formData = { ...categoria };
-    this.mostrarFormulario = true;
-  }
-
-  cancelEditCategoria() {
-    this.selectedCategoria = null;
-    this.formData = { nombre: '', descripcion: '', imagen: '', marca: false };
-    this.mostrarFormulario = false;
-    document.body.style.overflow = 'auto';
   }
 
   private createTiposMarcaIfNotExists(nombreCategoria: string): void {
@@ -166,6 +151,18 @@ export class CategoriasComponent implements OnInit {
     });
   }
 
+  editCategoria(categoria: any): void {
+    this.selectedCategoria = categoria;
+    this.formData = { ...categoria };
+    this.mostrarFormulario = true;
+  }
+
+  cancelEditCategoria() {
+    this.selectedCategoria = null;
+    this.formData = { nombre: '', descripcion: '', imagen: '', marca: false };
+    this.mostrarFormulario = false;
+    document.body.style.overflow = 'auto';
+  }
   deleteCategoria(id: number, nombre: string): void {
     this.apiService.getTiposMarcaByNombre(nombre).subscribe({
       next: (tipoMarcas: any[]) => {

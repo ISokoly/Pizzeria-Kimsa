@@ -4,7 +4,8 @@ const mysql = require('mysql2');
 const multer = require('multer');
 const bcrypt = require('bcrypt'); // Para encriptar contraseñas
 const path = require('path'); // <-- Asegúrate de importar esto
-const fs = require('fs');
+const fs = require('fs'); 
+const sharp = require('sharp');
 
 const app = express();
 const port = 3000;
@@ -14,36 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Configuración de almacenamiento con Multe
-// Configuración de la conexión a MySQL
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const tipo = req.body.tipo; // "producto" o "categoria"
-    const categoria = req.body.categoria; // Nombre de la categoría si es un producto
-
-    let uploadPath = 'uploads';
-
-    if (tipo === 'productos' && categoria) {
-      uploadPath = `uploads/productos/${categoria}`;
-    } else if (tipo === 'categorias') {
-      uploadPath = 'uploads/categorias';
-    }
-
-    // Crear la carpeta si no existe
-    fs.mkdirSync(uploadPath, { recursive: true });
-
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const nombreArchivo = req.body.nombre || 'imagen'; // Usa el nombre enviado desde el frontend
-    const extension = path.extname(file.originalname);
-    cb(null, nombreArchivo + extension);
-  }
-});
-
-const upload = multer({ storage });
+const tempPath = path.join(__dirname, 'uploads', 'temp');  // Carpeta temporal
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -147,7 +119,33 @@ app.use('/api', categoriaRoutes);
 app.use('/api', productoRoutes);
 app.use('/api', tiposMarcaRoutes);
 
-// Ruta para subir imágenes
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const tipo = req.body.tipo;
+    const categoria = req.body.categoria;
+
+    let uploadPath = 'uploads';
+
+    if (tipo === 'productos' && categoria) {
+      uploadPath = `uploads/productos/${categoria}`;
+    } else if (tipo === 'categorias') {
+      uploadPath = 'uploads/categorias';
+    }
+
+    fs.mkdirSync(uploadPath, { recursive: true });
+    fs.mkdirSync(tempPath, { recursive: true });
+
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const nombreArchivo = req.body.nombre || 'imagen';
+    const extension = '.jpg';
+    cb(null, nombreArchivo + extension);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 app.post('/api/upload', upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No se envió una imagen' });
@@ -157,16 +155,39 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
   const categoria = req.body.categoria;
   let imageUrl = `http://localhost:${port}/uploads`;
 
-  if (tipo === 'productos' && categoria) {
-    imageUrl += `/productos/${categoria}/${req.file.filename}`;
-  } else if (tipo === 'categorias') {
-    imageUrl += `/categorias/${req.file.filename}`;
-  }
+  const filePath = req.file.path;
 
-  res.json({ filePath: imageUrl });
+  try {
+    const image = sharp(filePath);
+    const metadata = await image.metadata();
+
+    const tempFilePath = path.join(tempPath, req.file.filename);
+
+    if (metadata.height > metadata.width) {
+      await image.resize(800, 1200, { fit: 'fill' });
+    } else {
+      await image.resize(1200, 800, { fit: 'fill' });
+    }
+
+    await image.toFile(tempFilePath);
+
+    fs.renameSync(tempFilePath, filePath);
+
+    if (tipo === 'productos' && categoria) {
+      imageUrl += `/productos/${categoria}/${req.file.filename}`;
+    } else if (tipo === 'categorias') {
+      imageUrl += `/categorias/${req.file.filename}`;
+    }
+
+    res.json({ filePath: imageUrl });
+
+  } catch (error) {
+    console.error('Error al redimensionar la imagen', error);
+    return res.status(500).json({ message: 'Error al redimensionar la imagen' });
+  }
 });
 
-// Iniciar servidor
+
 app.listen(port, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
 });

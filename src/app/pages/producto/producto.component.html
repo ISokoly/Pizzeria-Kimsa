@@ -1,12 +1,11 @@
 <div class="contenedor">
   <div class="products-container">
     <h1 class="title">{{ nombreCategoria }}</h1>
-
     <div class="products-grid">
       <div class="product-item" *ngFor="let producto of productos">
-        <h3 class="product-name">
+        <h2 class="product-name">
           {{ producto.nombre }}
-        </h3>
+        </h2>
         <div *ngIf="producto.imagen">
           <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
             <img [src]="producto.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }" alt="Imagen del producto" class="preview-img">
