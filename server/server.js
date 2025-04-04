@@ -187,7 +187,6 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
   }
 });
 
-
 app.listen(port, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
 });

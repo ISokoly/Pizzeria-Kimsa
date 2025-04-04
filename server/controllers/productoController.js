@@ -47,11 +47,37 @@ const eliminarImagenHuerfana = (imagen, categoria) => {
   }
 };
 
+const actualizarProductoNormal = (id, data, res) => {
+  Producto.update(id, data, (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ id, ...data });
+  });
+};
+
+const actualizarProductoConRenombrado = (id, data, imagenAnterior, categoria, res) => {
+  const nombreImagen = path.basename(imagenAnterior);
+  const extension = path.extname(nombreImagen);
+  const nuevoNombreImagen = `${data.nombre.replace(/\s+/g, '_')}${extension}`;
+
+  const oldPath = path.join(__dirname, '../uploads/productos', categoria, nombreImagen);
+  const newPath = path.join(__dirname, '../uploads/productos', categoria, nuevoNombreImagen);
+
+  fs.rename(oldPath, newPath, (err) => {
+    if (!err) {
+      data.imagen = `http://localhost:3000/uploads/productos/${categoria}/${nuevoNombreImagen}`;
+    }
+
+    Producto.update(id, data, (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id, ...data });
+    });
+  });
+};
+
 exports.updateProducto = (req, res) => {
   const id = req.params.id;
   const data = req.body;
 
-  // Obtener el producto actual para verificar si el nombre ha cambiado
   Producto.getById(id, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
@@ -60,10 +86,10 @@ exports.updateProducto = (req, res) => {
     }
 
     const productoAnterior = results[0];
+    const nombreAnterior = productoAnterior.nombre;
     const imagenAnterior = productoAnterior.imagen;
     const idCategoria = productoAnterior.id_categoria;
 
-    // Obtener la categoría actual
     Categoria.getById(idCategoria, (err, categoriaResults) => {
       if (err) return res.status(500).json({ error: err.message });
 
@@ -73,19 +99,11 @@ exports.updateProducto = (req, res) => {
 
       const categoria = categoriaResults[0]?.nombre;
 
-      // Comprobar si el nombre ha cambiado
-      if (productoAnterior.nombre !== data.nombre) {
-        // Si el nombre ha cambiado, eliminar la imagen anterior solo si existe
-        if (imagenAnterior && categoria) {
-          eliminarImagenHuerfana(imagenAnterior, categoria);
-        }
+      if (nombreAnterior !== data.nombre && imagenAnterior) {
+        actualizarProductoConRenombrado(id, data, imagenAnterior, categoria, res);
+      } else {
+        actualizarProductoNormal(id, data, res);
       }
-
-      // Proceder con la actualización del producto
-      Producto.update(id, data, (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id, ...data });
-      });
     });
   });
 };

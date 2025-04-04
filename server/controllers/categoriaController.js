@@ -1,6 +1,7 @@
 const Categoria = require('../models/categoriaModel');
 const path = require('path');
 const fs = require('fs'); 
+const Producto = require('../models/productoModel');
 
 exports.getAllCategorias = (req, res) => {
   Categoria.getAll((err, results) => {
@@ -36,6 +37,64 @@ const eliminarImagenHuerfana = (imagen) => {
   }
 };
 
+const renombrarCarpetaProductos = (nombreAnterior, nombreNuevo, callback) => {
+  const oldFolderPath = path.join(__dirname, '../uploads/productos', nombreAnterior.replace(/\s+/g, '_'));
+  const newFolderPath = path.join(__dirname, '../uploads/productos', nombreNuevo.replace(/\s+/g, '_'));
+
+  if (fs.existsSync(oldFolderPath)) {
+    fs.rename(oldFolderPath, newFolderPath, (err) => {
+      if (err) {
+        return callback({ error: 'Error al renombrar la carpeta de productos' });
+      }
+
+      Producto.updateImagenCategoria(nombreAnterior, nombreNuevo, callback);
+    });
+  } else {
+    callback({ error: 'Carpeta de productos no encontrada' });
+  }
+};
+
+const actualizarCategoriaNormal = (id, data, nombreAnterior, res) => {
+  Categoria.update(id, data, (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    renombrarCarpetaProductos(nombreAnterior, data.nombre, (err) => {
+      if (err) {
+        return res.status(500).json({ error: err.error });
+      }
+
+      res.json({ id, ...data });
+    });
+  });
+};
+
+const actualizarCategoriaConRenombrado = (id, data, nombreAnterior, imagenAnterior, res) => {
+  const nombreImagen = path.basename(imagenAnterior);
+  const extension = path.extname(nombreImagen);
+
+  const nuevoNombreImagen = `${data.nombre.replace(/\s+/g, '_')}${extension}`;
+  const oldPath = path.join(__dirname, '../uploads/categorias', nombreImagen);
+  const newPath = path.join(__dirname, '../uploads/categorias', nuevoNombreImagen);
+
+  fs.rename(oldPath, newPath, (err) => {
+    if (!err) {
+      data.imagen = `http://localhost:3000/uploads/categorias/${nuevoNombreImagen}`;
+    }
+
+    Categoria.update(id, data, (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      renombrarCarpetaProductos(nombreAnterior, data.nombre, (err) => {
+        if (err) {
+          return res.status(500).json({ error: err.error });
+        }
+
+        res.json({ id, ...data });
+      });
+    });
+  });
+};
+
 exports.updateCategoria = (req, res) => {
   const id = req.params.id;
   const data = req.body;
@@ -48,17 +107,14 @@ exports.updateCategoria = (req, res) => {
     }
 
     const categoriaAnterior = results[0];
-    if (categoriaAnterior.nombre !== data.nombre) {
-      const imagenAnterior = categoriaAnterior.imagen;
-      if (imagenAnterior) {
-        eliminarImagenHuerfana(imagenAnterior);
-      }
-    }
+    const nombreAnterior = categoriaAnterior.nombre;
+    const imagenAnterior = categoriaAnterior.imagen;
 
-    Categoria.update(id, data, (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ id, ...data });
-    });
+    if (nombreAnterior !== data.nombre && imagenAnterior) {
+      actualizarCategoriaConRenombrado(id, data, nombreAnterior, imagenAnterior, res);
+    } else {
+      actualizarCategoriaNormal(id, data, nombreAnterior, res);
+    }
   });
 };
 
