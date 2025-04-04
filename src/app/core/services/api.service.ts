@@ -166,7 +166,7 @@ export class ApiService {
     }
     formData.append('image', file);
 
-  
+
     return this.http.post<{ filePath: string }>(`${this.apiUrl}/upload`, formData);
   }
 
@@ -194,5 +194,25 @@ export class ApiService {
 
   deleteUsuario(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/usuarios/${id}`);
+  }
+
+  // Productos Bebidas
+  getCaracteristicas(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/caracteristicas_productos/producto`);
+  }
+
+  getCaracteristicasByProductoId(producto_id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/caracteristicas_productos/productos/${encodeURIComponent(producto_id)}`);
+  }
+
+  createCaracteristicas(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/caracteristicas_productos/producto`, data);
+  }
+
+  updateCaracteristicas(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/caracteristicas_productos/producto/${id}`, data);
+  }
+  deleteCaracteristicas(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/caracteristicas_productos/producto/${id}`);
   }
 }

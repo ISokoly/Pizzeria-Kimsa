@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-producto',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './producto.component.html',
   styleUrls: ['./producto.component.scss']
 })
@@ -26,10 +27,18 @@ export class ProductoComponent implements OnInit {
   formMarca = { nombre: '', tipos_marcas: '' };
   selectedMarca: any = null;
   mostrarFormularioMarca = false;
-  selectedMarcaNombre: string = ''; // Para almacenar el nombre de la marca seleccionada
+  selectedMarcaNombre: string = '';
   isVertical: boolean = false;
   mostrarLista = false;
   marcasFiltradas = [...this.marcas];
+
+  caracteristicas: any[] = [];
+  formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
+  mostrarFormularioCaracteristica = false;
+  mostrarModalAgregarCaracteristica = false;
+  productoIdParaCaracteristica: number | null = null;
+  sinCaracteristicas : boolean = false;
+
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) { }
 
@@ -46,34 +55,33 @@ export class ProductoComponent implements OnInit {
 
     this.loadCategorias();
     this.loadTiposMarcas();
+    this.loadCaracteristicas(this.selectedProducto);
   }
 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const img = new Image();
-      img.src = e.target.result;
-      img.onload = () => {
-        this.isVertical = img.height > img.width;
-        this.imagePreview = img.src;
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          this.isVertical = img.height > img.width;
+          this.imagePreview = img.src;
+        };
       };
-    };
-    reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
 
-    // Asegúrate de enviar también `tipo` y `categoria`
-    const nombre = this.formData.nombre;
-    const tipo = 'productos'; // Asegúrate de que esto existe y es "producto"
-    const categoria = this.nombreCategoria; // Asegúrate de que esto existe
+      const nombre = this.formData.nombre;
+      const tipo = 'productos'; // Asegúrate de que esto existe y es "producto"
+      const categoria = this.nombreCategoria; // Asegúrate de que esto existe
 
-    this.apiService.uploadImage(file, nombre, tipo, categoria).subscribe(response => {
-      this.formData.imagen = response.filePath;
-    });
+      this.apiService.uploadImage(file, nombre, tipo, categoria).subscribe(response => {
+        this.formData.imagen = response.filePath;
+      });
+    }
   }
-}
 
-  
   cancelEditProducto(): void {
     this.selectedProducto = null;
     this.resetForm();
@@ -187,7 +195,7 @@ onFileSelected(event: any) {
     if (!this.imagePreview && this.selectedProducto && this.selectedProducto.imagen) {
       this.formData.imagen = this.selectedProducto.imagen;
     }
-    
+
     if (!this.marcado) {
       this.formData.id_marca = null;
     }
@@ -235,7 +243,7 @@ onFileSelected(event: any) {
 
   abrirFormularioProducto(producto: any = null) {
     if (!producto) {
-      this.resetForm(); // Resetea el formulario al abrirlo para crear un nuevo producto
+      this.resetForm();
       this.selectedMarcaNombre = ''; // Reiniciar el campo de marca
     } else {
       this.selectedProducto = producto;
@@ -309,6 +317,80 @@ onFileSelected(event: any) {
     this.selectedMarca = null;
     this.formMarca = { nombre: '', tipos_marcas: this.formMarca.tipos_marcas };
     this.mostrarFormularioMarca = false;
+    document.body.style.overflow = 'auto';
+  }
+  loadCaracteristicas(productoId: number): void {
+    this.apiService.getCaracteristicasByProductoId(productoId).subscribe(
+      data => {
+        const producto = this.productos.find(p => p.id === productoId);
+        if (producto) {
+          producto.caracteristicas = data;
+        }
+      },
+      error => {
+        console.error('Error cargando características:', error);
+      }
+    );
+  }
+  
+  saveCaracteristica(): void {
+    if (!this.productoIdParaCaracteristica) return;
+
+    const data = {
+      ...this.formCaracteristica,
+      producto_id: this.productoIdParaCaracteristica
+    };
+
+    this.apiService.createCaracteristicas(data).subscribe(() => {
+      this.loadCaracteristicas(this.productoIdParaCaracteristica!);
+      this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
+      this.mostrarFormularioCaracteristica = false;
+    });
+  }
+  
+  deleteCaracteristica(id: number): void {
+    this.apiService.deleteCaracteristicas(id).subscribe(() => {
+      console.log('Característica eliminado:', id);
+      this.loadCaracteristicas(id);
+    });
+  }
+
+  abrirFormularioCaracteristiscasProducto(producto: any = null) {
+    this.selectedProducto = producto;
+    this.formData = { ...producto };
+    this.productoIdParaCaracteristica = producto.id;
+  
+    this.mostrarFormularioCaracteristica = true;
+    document.body.style.overflow = 'hidden';
+  
+    this.loadCaracteristicas(producto.id);
+  }
+
+  cancelarFormularioCaracteristica(): void {
+    this.mostrarFormularioCaracteristica = false;
+    this.selectedProducto = null;
+    this.productoIdParaCaracteristica = null;
+    document.body.style.overflow = 'auto';
+  }
+
+  abrirFormularioAgregarCaracteristiscasProducto(producto: any): void {
+    this.selectedProducto = producto;
+    this.formData = { ...producto };
+    this.productoIdParaCaracteristica = producto.id;
+
+    this.mostrarFormularioCaracteristica = false;
+    this.mostrarModalAgregarCaracteristica = true;
+
+    document.body.style.overflow = 'hidden';
+    this.loadCaracteristicas(producto.id);
+
+  }
+
+  cancelarAgregarFormularioCaracteristica(): void {
+    this.mostrarModalAgregarCaracteristica = false;
+    this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
+    this.selectedProducto = null;
+    this.productoIdParaCaracteristica = null;
     document.body.style.overflow = 'auto';
   }
 }

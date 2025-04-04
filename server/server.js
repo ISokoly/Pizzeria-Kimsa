@@ -74,7 +74,15 @@ connection.connect(async (err) => {
       imagen TEXT NULL,
       FOREIGN KEY (id_categoria) REFERENCES categorias(id),
       FOREIGN KEY (id_marca) REFERENCES marcas(id) ON DELETE SET NULL
-    )`
+    )`,
+
+    `CREATE TABLE IF NOT EXISTS caracteristicas_productos (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      producto_id INT NOT NULL,
+      nombre_caracteristica VARCHAR(100) NOT NULL,
+      valor_caracteristica VARCHAR(255) NOT NULL,
+      FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+      )`
   ];
 
   for (const query of queries) {
@@ -112,12 +120,14 @@ const usuarioRoutes = require('./routes/usuarioRoutes');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const productoRoutes = require('./routes/productoRoutes');
 const tiposMarcaRoutes = require('./routes/tiposMarcaRoutes');
+const caracteristicaProductosRoutes = require('./routes/caracteristicaProductosRoutes');
 
 app.use('/api', marcaRoutes);
 app.use('/api', usuarioRoutes);
 app.use('/api', categoriaRoutes);
 app.use('/api', productoRoutes);
 app.use('/api', tiposMarcaRoutes);
+app.use('/api', caracteristicaProductosRoutes);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

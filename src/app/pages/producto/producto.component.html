@@ -3,12 +3,17 @@
     <h1 class="title">{{ nombreCategoria }}</h1>
     <div class="products-grid">
       <div class="product-item" *ngFor="let producto of productos">
-        <h2 class="product-name">
+        <h2 (click)="producto.caracteristicas && producto.caracteristicas.length > 0 
+          ? abrirFormularioCaracteristiscasProducto(producto) 
+          : abrirFormularioAgregarCaracteristiscasProducto(producto)" class="product-name">
           {{ producto.nombre }}
         </h2>
+
         <div *ngIf="producto.imagen">
-          <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
-            <img [src]="producto.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }" alt="Imagen del producto" class="preview-img">
+          <div class="img-container"
+            [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
+            <img [src]="producto.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
+              alt="Imagen del producto" class="preview-img">
           </div>
         </div>
         <p class="product-description">
@@ -28,6 +33,7 @@
 </div>
 
 <div *ngIf="mostrarFormularioProducto">
+
   <body class="modal-abierto"></body>
   <div class="modal">
     <div class="form-modal">
@@ -37,25 +43,25 @@
       <form (ngSubmit)="saveProducto()" class="form-container">
         <label>
           Nombre del producto:
-          <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre del producto" required autocomplete="off" class="form-input">
+          <input type="text" [(ngModel)]="formData.nombre" name="nombre" placeholder="Escriba el nombre del producto"
+            required autocomplete="off" class="form-input">
         </label>
 
         <label>
           Descripción:
-          <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required class="form-input"></textarea>
+          <textarea [(ngModel)]="formData.descripcion" name="descripcion" placeholder="Escriba una descripcion" required
+            class="form-input"></textarea>
         </label>
 
         <div *ngIf="marcado" class="marca-container">
           <label>
             Marca:
-            <input [(ngModel)]="selectedMarcaNombre" name="id_marca" type="text" (input)="filtrarMarcas()" (focus)="mostrarListaMarcas()" (blur)="ocultarListaConRetraso()" 
-              placeholder="Escriba o seleccione una marca" class="form-input" autocomplete="off"/>
+            <input [(ngModel)]="selectedMarcaNombre" name="id_marca" type="text" (input)="filtrarMarcas()"
+              (focus)="mostrarListaMarcas()" (blur)="ocultarListaConRetraso()"
+              placeholder="Escriba o seleccione una marca" class="form-input" autocomplete="off" />
           </label>
           <ul *ngIf="mostrarLista" class="marcas-lista">
-            <li
-              *ngFor="let marca of marcasFiltradas"
-              (mousedown)="seleccionarMarca(marca.nombre)"
-            >
+            <li *ngFor="let marca of marcasFiltradas" (mousedown)="seleccionarMarca(marca.nombre)">
               {{ marca.nombre }}
             </li>
           </ul>
@@ -86,6 +92,7 @@
 
 <div *ngIf="marcado">
   <div *ngIf="mostrarFormularioMarca">
+
     <body class="modal-abierto"></body>
     <div class="modal">
       <div class="form-modal">
@@ -96,7 +103,8 @@
         <form (ngSubmit)="saveMarca()" class="form-container">
           <label>
             Nombre de la marca:
-            <input type="text" [(ngModel)]="formMarca.nombre" name="nombre" placeholder="Escriba el nombre de la marca" required autocomplete="off" class="form-input">
+            <input type="text" [(ngModel)]="formMarca.nombre" name="nombre" placeholder="Escriba el nombre de la marca"
+              required autocomplete="off" class="form-input">
           </label>
 
           <label>
@@ -123,3 +131,58 @@
     </div>
   </div>
 </div>
+
+@if (mostrarFormularioCaracteristica) {
+
+<body class="modal-abierto"></body>
+<div class="modal">
+  <div class="form-modal">
+    <!-- Si hay características existentes -->
+    <h2 class="form-title">Características actuales</h2>
+    <ul class="lista-caracteristicas">
+      <li *ngFor="let c of caracteristicas" class="caracteristica-item">
+        <span><strong>{{ c.nombre_caracteristica }}:</strong> {{ c.valor_caracteristica }}</span>
+        <mat-icon (click)="deleteCaracteristica(c.id)" class="icon-x">cancel</mat-icon>
+      </li>
+    </ul>
+
+    <!-- Botón que abre el modal secundario -->
+    <button type="button" class="form-btn-verde-caracter"
+      (click)="abrirFormularioAgregarCaracteristiscasProducto(productoIdParaCaracteristica)">
+      Agregar nueva característica
+    </button>
+    <button type="button" (click)="cancelarFormularioCaracteristica()" class="form-btn-gris-caracter">Cerrar</button>
+
+  </div>
+</div>
+}
+
+@else if (mostrarModalAgregarCaracteristica) {
+
+<body class="modal-abierto"></body>
+<div class="modal">
+  <div class="form-modal">
+    <!-- Si NO hay características -->
+    <h2 class="form-title">Agregar Característica</h2>
+    <form (ngSubmit)="saveCaracteristica()" class="form-container">
+      <label>
+        Nombre de la característica:
+        <input type="text" [(ngModel)]="formCaracteristica.nombre_caracteristica" name="nombre_caracteristica"
+          placeholder="Ej: Color, Tamaño, etc." required autocomplete="off" class="form-input">
+      </label>
+
+      <label>
+        Valor de la característica:
+        <input type="text" [(ngModel)]="formCaracteristica.valor_caracteristica" name="valor_caracteristica"
+          placeholder="Ej: Rojo, Grande, etc." required autocomplete="off" class="form-input">
+      </label>
+
+      <div class="botones">
+        <button type="submit" class="form-btn-verde">Guardar</button>
+        <button type="button" (click)="cancelarAgregarFormularioCaracteristica()"
+          class="form-btn-gris">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
