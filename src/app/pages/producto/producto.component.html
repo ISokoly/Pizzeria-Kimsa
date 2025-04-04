@@ -3,11 +3,17 @@
     <h1 class="title">{{ nombreCategoria }}</h1>
     <div class="products-grid">
       <div class="product-item" *ngFor="let producto of productos">
-        <h2 (click)="producto.caracteristicas && producto.caracteristicas.length > 0 
-          ? abrirFormularioCaracteristiscasProducto(producto) 
-          : abrirFormularioAgregarCaracteristiscasProducto(producto)" class="product-name">
-          {{ producto.nombre }}
-        </h2>
+
+        @if(producto.caracteristicas && producto.caracteristicas.length > 0){
+          <h2 (click)="abrirFormularioCaracteristiscasProducto(producto)" class="product-name">
+            {{ producto.nombre }}
+          </h2>
+          }
+        @else{
+          <h2 (click)="abrirFormularioAgregarCaracteristiscasProducto(producto)" class="product-name">
+            {{ producto.nombre }}
+          </h2>
+          }
 
         <div *ngIf="producto.imagen">
           <div class="img-container"
@@ -137,22 +143,19 @@
 <body class="modal-abierto"></body>
 <div class="modal">
   <div class="form-modal">
-    <!-- Si hay características existentes -->
     <h2 class="form-title">Características actuales</h2>
     <ul class="lista-caracteristicas">
-      <li *ngFor="let c of caracteristicas" class="caracteristica-item">
+      <li *ngFor="let c of selectedProducto?.caracteristicas" class="caracteristica-item">
         <span><strong>{{ c.nombre_caracteristica }}:</strong> {{ c.valor_caracteristica }}</span>
         <mat-icon (click)="deleteCaracteristica(c.id)" class="icon-x">cancel</mat-icon>
       </li>
     </ul>
 
-    <!-- Botón que abre el modal secundario -->
     <button type="button" class="form-btn-verde-caracter"
-      (click)="abrirFormularioAgregarCaracteristiscasProducto(productoIdParaCaracteristica)">
+      (click)="abrirFormularioAgregarCaracteristiscasProducto(selectedProducto)">
       Agregar nueva característica
     </button>
     <button type="button" (click)="cancelarFormularioCaracteristica()" class="form-btn-gris-caracter">Cerrar</button>
-
   </div>
 </div>
 }
@@ -162,7 +165,6 @@
 <body class="modal-abierto"></body>
 <div class="modal">
   <div class="form-modal">
-    <!-- Si NO hay características -->
     <h2 class="form-title">Agregar Característica</h2>
     <form (ngSubmit)="saveCaracteristica()" class="form-container">
       <label>

@@ -57,7 +57,7 @@ const actualizarProductoNormal = (id, data, res) => {
 const actualizarProductoConRenombrado = (id, data, imagenAnterior, categoria, res) => {
   const nombreImagen = path.basename(imagenAnterior);
   const extension = path.extname(nombreImagen);
-  const nuevoNombreImagen = `${data.nombre.replace(/\s+/g, '_')}${extension}`;
+  const nuevoNombreImagen = `${data.nombre.replace(/\s+/g, ' ')}${extension}`;
 
   const oldPath = path.join(__dirname, '../uploads/productos', categoria, nombreImagen);
   const newPath = path.join(__dirname, '../uploads/productos', categoria, nuevoNombreImagen);

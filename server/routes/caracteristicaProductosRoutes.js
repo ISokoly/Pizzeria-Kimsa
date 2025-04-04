@@ -9,6 +9,6 @@ router.put('/caracteristicas_productos/producto/:id', caracteristicaProductosCon
 router.delete('/caracteristicas_productos/producto/:id', caracteristicaProductosController.deleteCaracteristicasProductos);
 
 // 👇 ESTA es la ruta que filtra por producto_id, ahora con prefijo claro
-router.get('/caracteristicas_productos/productos/:producto_id', caracteristicaProductosController.getCaracteristicasProductosByProducto);
+router.get('/caracteristicas_productos/:producto_id', caracteristicaProductosController.getCaracteristicasProductosByProducto);
 
 module.exports = router;
