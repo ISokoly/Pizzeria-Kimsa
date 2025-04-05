@@ -1,23 +1,20 @@
+import "./chunk-SZS4RJEH.js";
+import "./chunk-FNWHIZM7.js";
+import {
+  MatDivider,
+  MatDividerModule
+} from "./chunk-A4POX2MW.js";
 import {
   MAT_RIPPLE_GLOBAL_OPTIONS,
   MatRippleModule,
   RippleRenderer,
   _StructuralStylesLoader
 } from "./chunk-RY4QSIIQ.js";
-import {
-  MatDivider,
-  MatDividerModule
-} from "./chunk-A4POX2MW.js";
-import {
-  NG_VALUE_ACCESSOR
-} from "./chunk-B32P2DNG.js";
-import "./chunk-SZS4RJEH.js";
-import "./chunk-FNWHIZM7.js";
+import "./chunk-FA2Y5XL4.js";
+import "./chunk-65RJ5ZZ2.js";
 import {
   coerceBooleanProperty
 } from "./chunk-377BBJ27.js";
-import "./chunk-FA2Y5XL4.js";
-import "./chunk-65RJ5ZZ2.js";
 import {
   A,
   CdkObserveContent,
@@ -36,6 +33,9 @@ import {
   coerceNumberProperty
 } from "./chunk-ID5JCSM7.js";
 import "./chunk-PNN2A3NM.js";
+import {
+  NG_VALUE_ACCESSOR
+} from "./chunk-B32P2DNG.js";
 import {
   NgTemplateOutlet
 } from "./chunk-VJE4L4UK.js";

@@ -4,22 +4,20 @@
     <div class="products-grid">
       <div class="product-item" *ngFor="let producto of productos">
 
-        @if(producto.caracteristicas && producto.caracteristicas.length > 0){
-          <h2 (click)="abrirFormularioCaracteristiscasProducto(producto)" class="product-name">
-            {{ producto.nombre }}
-          </h2>
-          }
-        @else{
-          <h2 (click)="abrirFormularioAgregarCaracteristiscasProducto(producto)" class="product-name">
-            {{ producto.nombre }}
-          </h2>
-          }
+        @if ((caracteristicasMap.get(producto.id)?.length || 0) > 0) {
+        <h2 (click)="abrirFormularioCaracteristiscasProducto(producto)" class="product-name">
+          {{ producto.nombre }}
+        </h2>
+        }
+        @else {
+        <h2 (click)="abrirFormularioAgregarCaracteristiscasProducto(producto)" class="product-name">
+          {{ producto.nombre }}
+        </h2>
+        }
 
         <div *ngIf="producto.imagen">
-          <div class="img-container"
-            [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }">
-            <img [src]="producto.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
-              alt="Imagen del producto" class="preview-img">
+          <div class="img-container horizontal-container">
+            <img [src]="producto.imagen" alt="Imagen del producto" class="preview-img img-horizontal">
           </div>
         </div>
         <p class="product-description">
@@ -139,26 +137,29 @@
 </div>
 
 @if (mostrarFormularioCaracteristica) {
+<ng-container>
 
-<body class="modal-abierto"></body>
-<div class="modal">
-  <div class="form-modal">
-    <h2 class="form-title">Características actuales</h2>
-    <ul class="lista-caracteristicas">
-      <li *ngFor="let c of selectedProducto?.caracteristicas" class="caracteristica-item">
-        <span><strong>{{ c.nombre_caracteristica }}:</strong> {{ c.valor_caracteristica }}</span>
-        <mat-icon (click)="deleteCaracteristica(c.id)" class="icon-x">cancel</mat-icon>
-      </li>
-    </ul>
+  <body class="modal-abierto"></body>
+  <div class="modal">
+    <div class="form-modal">
+      <h2 class="form-title">Características actuales</h2>
+      <ul class="lista-caracteristicas">
+        <li *ngFor="let c of caracteristicasMap.get(selectedProducto?.id) || []" class="caracteristica-item">
+          <span><strong>{{ c.nombre_caracteristica }}:</strong> {{ c.valor_caracteristica }}</span>
+          <mat-icon (click)="deleteCaracteristica(c.id)" class="icon-x">cancel</mat-icon>
+        </li>
+      </ul>
 
-    <button type="button" class="form-btn-verde-caracter"
-      (click)="abrirFormularioAgregarCaracteristiscasProducto(selectedProducto)">
-      Agregar nueva característica
-    </button>
-    <button type="button" (click)="cancelarFormularioCaracteristica()" class="form-btn-gris-caracter">Cerrar</button>
+      <button type="button" class="form-btn-verde-caracter"
+        (click)="abrirFormularioAgregarCaracteristiscasProducto(selectedProducto)">
+        Agregar nueva característica
+      </button>
+      <button type="button" (click)="cancelarFormularioCaracteristica()" class="form-btn-gris-caracter">Cerrar</button>
+    </div>
   </div>
-</div>
+</ng-container>
 }
+
 
 @else if (mostrarModalAgregarCaracteristica) {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
@@ -13,7 +13,6 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./categorias.component.scss']
 })
 export class CategoriasComponent implements OnInit {
-  isVertical: boolean = false;
   tiposMarcas: any[] = [];
   categorias: any[] = [];
   formData = { nombre: '', descripcion: '', imagen: '', marca: false };
@@ -48,27 +47,17 @@ export class CategoriasComponent implements OnInit {
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
+      
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = () => {
-          this.isVertical = img.height > img.width;
-          this.imagePreview = img.src;
-        };
-      };
-      reader.readAsDataURL(file);
-
       const nombre = this.formData.nombre;
       const tipo = 'categorias';
-
+  
       this.apiService.uploadImage(file, nombre, tipo).subscribe(response => {
         this.formData.imagen = response.filePath;
       });
     }
   }
-
+  
 
   saveCategoria(): void {
     const nombreCategoria = this.formData.nombre?.trim();
@@ -108,8 +97,6 @@ export class CategoriasComponent implements OnInit {
           }
 
           this.resetForm();
-          location.reload();
-
         });
 
       } else {
@@ -124,6 +111,7 @@ export class CategoriasComponent implements OnInit {
       }
 
       this.mostrarFormulario = false;
+      location.reload();
     });
   }
 
@@ -160,9 +148,11 @@ export class CategoriasComponent implements OnInit {
   cancelEditCategoria() {
     this.selectedCategoria = null;
     this.formData = { nombre: '', descripcion: '', imagen: '', marca: false };
+  
     this.mostrarFormulario = false;
     document.body.style.overflow = 'auto';
   }
+
   deleteCategoria(id: number, nombre: string): void {
     this.apiService.getTiposMarcaByNombre(nombre).subscribe({
       next: (tipoMarcas: any[]) => {

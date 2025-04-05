@@ -25,14 +25,9 @@ $color-bg: #f9f9f9;
   background-color: #f3f3f3;
   padding: 10px;
   border-radius: 20px;
-  overflow: hidden; /* Asegura que la imagen no sobresalga */
+  overflow: hidden;
   width: fit-content;
   height: fit-content;
-}
-
-.vertical-container {
-  width: 200px;
-  height: 300px;
 }
 
 .horizontal-container {
@@ -40,14 +35,16 @@ $color-bg: #f9f9f9;
   height: 200px;
 }
 
-.img-vertical, .img-horizontal {
+.img-horizontal {
   max-width: 100%;
   max-height: 100%;
-  object-fit: cover; /* Cambia de "contain" a "cover" */
+  object-fit: cover;
+  /* Cambia de "contain" a "cover" */
   border-radius: 20px;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #0b6e4f;
   border-bottom: 2px dashed #0b6e4f;
   padding-bottom: 8px;
@@ -106,6 +103,7 @@ h1, h2 {
     opacity: 0;
     transform: translate(-50%, -55%);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%);
@@ -130,6 +128,7 @@ body.modal-abierto {
   align-items: center;
   z-index: 1000;
 }
+
 /* Contenedor del formulario */
 .form-modal {
   background: white;
@@ -167,20 +166,23 @@ body.modal-abierto {
 }
 
 .form {
-  padding: 0 10px; /* Agrega espacio lateral al contenedor */
+  padding: 0 10px;
+  /* Agrega espacio lateral al contenedor */
 }
 
 /* Campos de entrada */
 .form-input {
   width: 100%;
-  padding: 12px 15px;  /* Aumentamos el padding horizontal */
+  padding: 12px 15px;
+  /* Aumentamos el padding horizontal */
   font-size: 16px;
   border-radius: 6px;
   border: 1.5px solid #0b6e4f;
   background-color: #f9fdf9;
   outline: none;
   transition: border 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
-  box-sizing: border-box; /* Para evitar que el padding afecte el ancho */
+  box-sizing: border-box;
+  /* Para evitar que el padding afecte el ancho */
 }
 
 /* Efecto de enfoque */
@@ -207,7 +209,7 @@ body.modal-abierto {
   font-size: 16px;
   width: 48%;
   text-align: center;
-  transition:  0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
 }
 
 .form-btn-verde:hover {
@@ -225,7 +227,7 @@ body.modal-abierto {
   font-size: 16px;
   width: 48%;
   text-align: center;
-  transition:  0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
 }
 
 .form-btn-gris:hover {
@@ -276,7 +278,8 @@ body.modal-abierto {
       justify-content: center;
       gap: 10px;
 
-      .edit-btn, .delete-btn {
+      .edit-btn,
+      .delete-btn {
         padding: 8px 12px;
         border: none;
         cursor: pointer;
@@ -305,6 +308,7 @@ body.modal-abierto {
     }
   }
 }
+
 .marca-container {
   display: flex;
   align-items: center;
@@ -332,6 +336,7 @@ body.modal-abierto {
     color: green;
   }
 }
+
 .submit-btn,
 .cancel-btn {
   width: 100%;

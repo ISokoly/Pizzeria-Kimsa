@@ -28,7 +28,6 @@ export class ProductoComponent implements OnInit {
   selectedMarca: any = null;
   mostrarFormularioMarca = false;
   selectedMarcaNombre: string = '';
-  isVertical: boolean = false;
   mostrarLista = false;
   marcasFiltradas = [...this.marcas];
 
@@ -37,7 +36,7 @@ export class ProductoComponent implements OnInit {
   mostrarFormularioCaracteristica = false;
   mostrarModalAgregarCaracteristica = false;
   productoIdParaCaracteristica: number | null = null;
-  sinCaracteristicas : boolean = false;
+  sinCaracteristicas: boolean = false;
 
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) { }
@@ -65,10 +64,6 @@ export class ProductoComponent implements OnInit {
       reader.onload = (e: any) => {
         const img = new Image();
         img.src = e.target.result;
-        img.onload = () => {
-          this.isVertical = img.height > img.width;
-          this.imagePreview = img.src;
-        };
       };
       reader.readAsDataURL(file);
 
@@ -318,43 +313,46 @@ export class ProductoComponent implements OnInit {
     this.mostrarFormularioMarca = false;
     document.body.style.overflow = 'auto';
   }
-  
+
+  caracteristicasMap = new Map<number, any[]>();
+
   loadCaracteristicas(): void {
     this.apiService.getCaracteristicas().subscribe(
       data => {
         console.log('Características cargadas:', data);
-        this.caracteristicas = data;  // Asignar todas las características a la propiedad
-  
-        // Filtrar las características por producto (si es necesario)
-        this.productos.forEach(producto => {
-          // Filtrar las características correspondientes a cada producto
-          producto.caracteristicas = this.caracteristicas.filter(c => c.producto_id === producto.id);
-        });
+        this.caracteristicas = data;
+
+        // Mapeamos por producto_id
+        this.caracteristicasMap.clear();
+        for (const c of data) {
+          if (!this.caracteristicasMap.has(c.producto_id)) {
+            this.caracteristicasMap.set(c.producto_id, []);
+          }
+          this.caracteristicasMap.get(c.producto_id)!.push(c);
+        }
       },
       error => {
         console.error('Error cargando características:', error);
       }
     );
   }
-  
-  
+
   saveCaracteristica(): void {
     if (!this.productoIdParaCaracteristica) return;
-  
+
     const data = {
       ...this.formCaracteristica,
       producto_id: this.productoIdParaCaracteristica
     };
-  
+
     this.apiService.createCaracteristicas(data).subscribe(() => {
-      // Aquí ya no necesitamos pasar el id del producto, simplemente cargamos todas las características
-      this.loadCaracteristicas();  // Recargamos todas las características
+      this.loadCaracteristicas();
       this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
       this.mostrarModalAgregarCaracteristica = false;
       this.mostrarFormularioCaracteristica = true;
     });
   }
-  
+
   deleteCaracteristica(id: number): void {
     this.apiService.deleteCaracteristicas(id).subscribe(() => {
       console.log('Característica eliminada:', id);
@@ -362,45 +360,40 @@ export class ProductoComponent implements OnInit {
       this.loadCaracteristicas();  // Recargamos todas las características
     });
   }
-  
+
   abrirFormularioCaracteristiscasProducto(producto: any): void {
     if (!producto) {
       return;
     }
-  
     // Asignar el producto seleccionado
     this.selectedProducto = producto;
-  
-    // Si las características del producto no están cargadas, cargarlas
-    if (!producto.caracteristicas || producto.caracteristicas.length === 0) {
-      this.loadCaracteristicas();  // Cargar todas las características si no están
-    }
-  
+
+    this.loadCaracteristicas();
     // Mostrar el formulario de características
     this.productoIdParaCaracteristica = producto.id;
     this.mostrarFormularioCaracteristica = true;
     document.body.style.overflow = 'hidden';
   }
-  
+
   cancelarFormularioCaracteristica(): void {
     this.mostrarFormularioCaracteristica = false;
     this.selectedProducto = null;
     this.productoIdParaCaracteristica = null;
     document.body.style.overflow = 'auto';
   }
-  
+
   abrirFormularioAgregarCaracteristiscasProducto(producto: any): void {
     // Asignar el producto seleccionado para agregar nuevas características
     this.selectedProducto = producto;
     this.productoIdParaCaracteristica = producto.id;
-  
+
     // Abrir el formulario para agregar características
     this.mostrarModalAgregarCaracteristica = true;
     this.mostrarFormularioCaracteristica = false;
     document.body.style.overflow = 'hidden';
     this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
   }
-  
+
   cancelarAgregarFormularioCaracteristica(): void {
     this.mostrarModalAgregarCaracteristica = false;
     this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };

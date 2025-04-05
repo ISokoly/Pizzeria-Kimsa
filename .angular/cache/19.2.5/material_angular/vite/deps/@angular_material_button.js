@@ -5,9 +5,9 @@ import {
   _StructuralStylesLoader,
   defaultRippleAnimationConfig
 } from "./chunk-RY4QSIIQ.js";
-import "./chunk-377BBJ27.js";
 import "./chunk-FA2Y5XL4.js";
 import "./chunk-65RJ5ZZ2.js";
+import "./chunk-377BBJ27.js";
 import {
   FocusMonitor,
   MatCommonModule,

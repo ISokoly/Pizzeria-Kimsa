@@ -9,10 +9,9 @@
           {{ categoria.nombre }}
         </h2>
         @if (categoria.imagen) {
-        <div class="img-container" [ngClass]="{ 'vertical-container': isVertical, 'horizontal-container': !isVertical }"
-          (click)="verProductos(categoria.nombre, categoria.marca)" style="cursor: pointer;">
-          <img [src]="categoria.imagen" [ngClass]="{ 'img-vertical': isVertical, 'img-horizontal': !isVertical }"
-            alt="Imagen de la Categoría" class="preview-img">
+        <div class="img-container horizontal-container" (click)="verProductos(categoria.nombre, categoria.marca)"
+          style="cursor: pointer;">
+          <img [src]="categoria.imagen" alt="Imagen de la Categoría" class="preview-img img-horizontal">
         </div>
         }
         <p class="category-description" (click)="verProductos(categoria.nombre, categoria.marca)"
@@ -30,7 +29,6 @@
 </div>
 
 @if (mostrarFormulario) {
-
 <body class="modal-abierto"></body>
 <div class="modal">
   <div class="form-modal">
