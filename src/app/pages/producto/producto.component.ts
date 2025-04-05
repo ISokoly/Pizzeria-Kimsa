@@ -21,7 +21,6 @@ export class ProductoComponent implements OnInit {
   selectedProducto: any = null;
   nombreCategoria: string = '';
   imagePreview: string | null = null;
-  selectedCategoriaNombre: string = 'Productos de la pizzería';
   marcado: boolean = false;
 
   formMarca = { nombre: '', tipos_marcas: '' };
@@ -57,23 +56,20 @@ export class ProductoComponent implements OnInit {
     this.loadCaracteristicas();
   }
 
+  selectedFile: File | null = null;
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.selectedFile = file;
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const img = new Image();
         img.src = e.target.result;
+        this.imagePreview = img.src;
       };
       reader.readAsDataURL(file);
-
-      const nombre = this.formData.nombre;
-      const tipo = 'productos'; // Asegúrate de que esto existe y es "producto"
-      const categoria = this.nombreCategoria; // Asegúrate de que esto existe
-
-      this.apiService.uploadImage(file, nombre, tipo, categoria).subscribe(response => {
-        this.formData.imagen = response.filePath;
-      });
     }
   }
 
@@ -194,6 +190,24 @@ export class ProductoComponent implements OnInit {
       this.formData.id_marca = null;
     }
 
+    const nombre = this.formData.nombre;
+    const tipo = 'productos';
+
+    // Obtener el nombre de la categoría a partir del id_categoria
+    const categoriaObj = this.categorias.find(cat => cat.id === this.formData.id_categoria);
+    const categoria = categoriaObj ? categoriaObj.nombre : 'sin_categoria';
+
+    if (this.selectedFile) {
+      this.apiService.uploadImage(this.selectedFile, nombre, tipo, categoria).subscribe(response => {
+        this.formData.imagen = response.filePath;
+        this.finalizarGuardadoProducto();
+      });
+    } else {
+      this.finalizarGuardadoProducto();
+    }
+  }
+
+  finalizarGuardadoProducto(): void {
     const accion = this.selectedProducto
       ? this.apiService.updateProducto(this.selectedProducto.id, this.formData)
       : this.apiService.createProducto(this.formData);
@@ -208,7 +222,6 @@ export class ProductoComponent implements OnInit {
     this.mostrarFormularioProducto = false;
   }
 
-
   editProducto(producto: any): void {
     this.selectedProducto = producto;
     this.formData = { ...producto };
@@ -216,8 +229,15 @@ export class ProductoComponent implements OnInit {
     const marcaSeleccionada = this.marcas.find(m => m.id === this.formData.id_marca);
     this.selectedMarcaNombre = marcaSeleccionada ? marcaSeleccionada.nombre : '';
 
+    if (producto.imagen) {
+      this.imagePreview = producto.imagen;
+    }
+
+    this.nombreCategoria = producto.categoria;
+
     this.mostrarFormularioProducto = true;
   }
+
 
   deleteProducto(id: number): void {
     this.apiService.deleteProducto(id).subscribe(() => {

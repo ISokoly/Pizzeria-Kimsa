@@ -45,75 +45,123 @@ export class CategoriasComponent implements OnInit {
     });
   }
 
+  selectedFile: File | null = null;
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
-      
     if (file) {
-      const nombre = this.formData.nombre;
-      const tipo = 'categorias';
+      this.selectedFile = file;
   
-      this.apiService.uploadImage(file, nombre, tipo).subscribe(response => {
-        this.formData.imagen = response.filePath;
-      });
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.src = e.target.result;
+        this.imagePreview = img.src;
+      };
+      reader.readAsDataURL(file);
     }
   }
-  
 
   saveCategoria(): void {
     const nombreCategoria = this.formData.nombre?.trim();
-
+  
     if (!nombreCategoria) {
       alert('El nombre de la categoría no puede estar vacío.');
       return;
     }
+  
     if (!this.imagePreview && this.selectedCategoria && this.selectedCategoria.imagen) {
       this.formData.imagen = this.selectedCategoria.imagen;
     }
-
+  
     this.apiService.getCategorias().subscribe((categorias: any[]) => {
       this.categorias = categorias;
-
+  
       const existeOtraCategoria = this.categorias.some(cat =>
         cat.nombre.toLowerCase() === nombreCategoria.toLowerCase() &&
         (!this.selectedCategoria || cat.id !== this.selectedCategoria.id) // Comparación por ID
       );
-
+  
       if (existeOtraCategoria) {
         alert('Ya existe otra categoría con este nombre.');
         return;
       }
-
-      if (this.selectedCategoria) {
-        const nombreAnterior = this.selectedCategoria.nombre;
-        const marcaAnterior = this.selectedCategoria.marca; // Estado anterior de 'marca'
-
-        this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
-          this.loadCategorias();
-          this.updateTiposMarcaIfExists(nombreAnterior, nombreCategoria);
-
-          // Si antes 'marca' era falso y ahora es verdadero, intentar crear tipos_marcas
-          if (!marcaAnterior && this.formData.marca) {
-            this.createTiposMarcaIfNotExists(nombreCategoria);
+  
+      // Si hay un archivo seleccionado, sube la imagen
+      if (this.selectedFile) {
+        const nombre = this.formData.nombre;
+        const tipo = 'categorias'; // Cambia esto si es necesario
+        const categoria = nombreCategoria; // Asegúrate de que esto existe
+  
+        this.apiService.uploadImage(this.selectedFile, nombre, tipo, categoria).subscribe(response => {
+          this.formData.imagen = response.filePath;
+  
+          // Después de subir la imagen, guarda la categoría
+          if (this.selectedCategoria) {
+            const nombreAnterior = this.selectedCategoria.nombre;
+            const marcaAnterior = this.selectedCategoria.marca; // Estado anterior de 'marca'
+  
+            this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
+              this.loadCategorias();
+              this.updateTiposMarcaIfExists(nombreAnterior, nombreCategoria);
+  
+              // Si antes 'marca' era falso y ahora es verdadero, intenta crear tipos_marcas
+              if (!marcaAnterior && this.formData.marca) {
+                this.createTiposMarcaIfNotExists(nombreCategoria);
+              }
+  
+              this.resetForm();
+            });
+  
+          } else {
+            this.apiService.createCategoria(this.formData).subscribe(() => {
+              if (this.formData.marca) {
+                this.createTiposMarcaIfNotExists(nombreCategoria);
+              }
+              this.loadCategorias();
+              this.resetForm();
+              location.reload();
+            });
           }
-
-          this.resetForm();
-        });
-
-      } else {
-        this.apiService.createCategoria(this.formData).subscribe(() => {
-          if (this.formData.marca) {
-            this.createTiposMarcaIfNotExists(nombreCategoria);
-          }
-          this.loadCategorias();
-          this.resetForm();
+  
+          this.mostrarFormulario = false;
           location.reload();
         });
+      } else {
+        // Si no hay archivo seleccionado, guarda la categoría directamente
+        if (this.selectedCategoria) {
+          const nombreAnterior = this.selectedCategoria.nombre;
+          const marcaAnterior = this.selectedCategoria.marca; // Estado anterior de 'marca'
+  
+          this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
+            this.loadCategorias();
+            this.updateTiposMarcaIfExists(nombreAnterior, nombreCategoria);
+  
+            // Si antes 'marca' era falso y ahora es verdadero, intenta crear tipos_marcas
+            if (!marcaAnterior && this.formData.marca) {
+              this.createTiposMarcaIfNotExists(nombreCategoria);
+            }
+  
+            this.resetForm();
+          });
+  
+        } else {
+          this.apiService.createCategoria(this.formData).subscribe(() => {
+            if (this.formData.marca) {
+              this.createTiposMarcaIfNotExists(nombreCategoria);
+            }
+            this.loadCategorias();
+            this.resetForm();
+            location.reload();
+          });
+        }
+  
+        this.mostrarFormulario = false;
+        location.reload();
       }
-
-      this.mostrarFormulario = false;
-      location.reload();
     });
   }
+  
 
   private createTiposMarcaIfNotExists(nombreCategoria: string): void {
     this.apiService.getTiposMarcaByNombre(nombreCategoria).subscribe((tipoMarca: any) => {
@@ -144,11 +192,9 @@ export class CategoriasComponent implements OnInit {
     this.formData = { ...categoria };
     this.mostrarFormulario = true;
   }
-
   cancelEditCategoria() {
     this.selectedCategoria = null;
     this.formData = { nombre: '', descripcion: '', imagen: '', marca: false };
-  
     this.mostrarFormulario = false;
     document.body.style.overflow = 'auto';
   }
