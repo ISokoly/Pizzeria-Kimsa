@@ -99,7 +99,6 @@ export class ProductoComponent implements OnInit {
     const filtroLower = this.filtro.toLowerCase();
   
     return this.productos.filter(producto => {
-      // Verificar si la categoría tiene el campo 'marca' activado
       const categoria = this.categorias.find(cat => cat.id === producto.id_categoria);
       const mostrarMarca = categoria ? categoria.marca : false;
   

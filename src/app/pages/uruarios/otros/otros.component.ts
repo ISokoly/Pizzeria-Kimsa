@@ -1,18 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../core/services/api.service';
-import { CommonModule } from '@angular/common';
+import { ApiService } from '../../../core/services/api.service';
+import { MatIcon } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ViewComponent } from '../../view/view.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-uruarios',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './uruarios.component.html',
-  styleUrls: ['./uruarios.component.scss']
+  selector: 'app-otros',
+  imports: [CommonModule, FormsModule, MatIcon],
+  templateUrl: './otros.component.html',
+  styleUrl: './otros.component.scss'
 })
-export class UruariosComponent implements OnInit {
+export class OtrosComponent implements OnInit{
   usuario: any;
   empleados: any[] = [];
   usuarios: any[] = [];
@@ -31,7 +29,7 @@ export class UruariosComponent implements OnInit {
   };
   userSeleccionado: any = null;
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerUsuario();
@@ -49,12 +47,6 @@ export class UruariosComponent implements OnInit {
     }
   
     this.usuario = usuario;
-  }
-
-  verOtros() {
-    const ruta = `/view/usuarios/otros`;
-    this.router.navigate([ruta]);
-    ViewComponent.estaSeleccionado = true;
   }
 
   obtenerUsuarios(): void {
@@ -169,4 +161,5 @@ export class UruariosComponent implements OnInit {
       );
     }
   }
+  
 }
