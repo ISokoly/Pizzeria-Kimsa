@@ -92,6 +92,7 @@ export class ProductoComponent implements OnInit {
   cambiarFiltroTipo(tipo: 'nombre' | 'caracteristica' | 'marca') {
     this.filtroTipo = tipo;
     this.mostrarOpciones = false;
+    this.filtro = '';
   }
   
   productosFiltrados() {
