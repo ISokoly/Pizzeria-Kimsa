@@ -52,10 +52,10 @@
         </div>
       </div>
     </div>
-    <button class="create-btn" (click)="abrirFormularioProducto()">Añadir un nuevo Producto</button>
     <div *ngIf="marcado">
       <button class="create-btn" (click)="abrirFormularioMarca()">Añadir una Marca</button>
     </div>
+    <button class="create-btn" (click)="abrirFormularioProducto()">Añadir un nuevo Producto</button>
   </div>
 </div>
 
@@ -169,6 +169,7 @@
       <ul class="lista-caracteristicas">
         <li *ngFor="let c of caracteristicasMap.get(selectedProducto?.id) || []" class="caracteristica-item">
           <span><strong>{{ c.nombre_caracteristica }}:</strong> {{ c.valor_caracteristica }}</span>
+          <mat-icon (click)="editCaracteristica(c)" class="icon-edit">edit</mat-icon>
           <mat-icon (click)="deleteCaracteristica(c.id)" class="icon-x">cancel</mat-icon>
         </li>
       </ul>

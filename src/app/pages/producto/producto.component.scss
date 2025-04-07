@@ -292,7 +292,6 @@ body.modal-abierto {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
     &:hover {
-      transform: scale(1.02);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
@@ -440,6 +439,24 @@ body.modal-abierto {
   }
 }
 
+.icon-edit {
+  font-size: 30px;
+  color: #71b0f8;
+  background-color: transparent;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #e5f7ff;
+  }
+}
+
 .form-btn-verde-caracter {
   background: #0b6e4f;
   color: white;
@@ -484,6 +501,7 @@ body.modal-abierto {
   justify-content: space-between; /* Esto ayuda a separar el nombre y la barra de búsqueda */
   align-items: center;
   width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  margin-bottom: 15px;
 }
 
 /* Barra de búsqueda */
@@ -519,7 +537,7 @@ body.modal-abierto {
   position: absolute;
   background: white;
   border: 1px solid #ccc;
-  margin-top: 5px;
+  margin-top: 1px;
   border-radius: 6px;
   list-style: none;
   padding: 0;
@@ -527,7 +545,7 @@ body.modal-abierto {
 }
 
 .dropdown-menu li {
-  padding: 8px;
+  padding: 5px;
   cursor: pointer;
 }
 

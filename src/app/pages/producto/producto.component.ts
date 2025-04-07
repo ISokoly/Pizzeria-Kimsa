@@ -33,6 +33,7 @@ export class ProductoComponent implements OnInit {
   marcaMap = new Map<number, string>();
 
   caracteristicas: any[] = [];
+  selectedCaracteristica: any = null;
   formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
   mostrarFormularioCaracteristica = false;
   mostrarModalAgregarCaracteristica = false;
@@ -447,26 +448,57 @@ export class ProductoComponent implements OnInit {
   }
 
   saveCaracteristica(): void {
-    if (!this.productoIdParaCaracteristica) return;
-
+    if (!this.formCaracteristica.nombre_caracteristica || !this.formCaracteristica.valor_caracteristica) {
+      alert('Complete todos los campos requeridos');
+      return;
+    }
+  
     const data = {
       ...this.formCaracteristica,
-      producto_id: this.productoIdParaCaracteristica
+      producto_id: this.productoIdParaCaracteristica // Asegurándonos de incluir el ID del producto
     };
-
-    this.apiService.createCaracteristicas(data).subscribe(() => {
-      this.loadCaracteristicas();
-      this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
-      this.mostrarModalAgregarCaracteristica = false;
-      this.mostrarFormularioCaracteristica = true;
-    });
+  
+    if (this.selectedCaracteristica) {
+      // Actualización de la característica existente
+      this.apiService.updateCaracteristicas(this.selectedCaracteristica.id, data).subscribe(() => {
+        console.log('Característica actualizada:', this.selectedCaracteristica.id);
+        this.loadCaracteristicas();
+        this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
+        this.mostrarModalAgregarCaracteristica = false;
+        this.mostrarFormularioCaracteristica = true;
+      });
+    } else {
+      // Creación de una nueva característica
+      this.apiService.createCaracteristicas(data).subscribe(() => {
+        console.log('Característica creada:', this.formCaracteristica);
+        this.loadCaracteristicas();
+        this.formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
+        this.mostrarModalAgregarCaracteristica = false;
+        this.mostrarFormularioCaracteristica = true;
+      });
+    }
   }
+  
+  editCaracteristica(caracteristica: any): void {
+    if (!caracteristica || !caracteristica.id) {
+      console.error('Característica no válida o sin ID');
+      return;
+    }
+  
+    this.selectedCaracteristica = caracteristica;
+    this.formCaracteristica = { ...caracteristica };
+    
+    console.log('ID de la característica seleccionada:', this.selectedCaracteristica.id);
+    
+    this.mostrarModalAgregarCaracteristica = true;
+    this.mostrarFormularioCaracteristica = false;
+  }
+  
 
   deleteCaracteristica(id: number): void {
     this.apiService.deleteCaracteristicas(id).subscribe(() => {
       console.log('Característica eliminada:', id);
-      // Al eliminar, recargamos todas las características de todos los productos
-      this.loadCaracteristicas();  // Recargamos todas las características
+      this.loadCaracteristicas();
     });
   }
 
