@@ -166,8 +166,8 @@ const storage = multer.diskStorage({
     // Si la solicitud es de actualización y existe el archivo, sobrescribimos
     if (req.body.isUpdate === 'true') {
       while (fs.existsSync(fullPath)) {
-        count++;
-        finalName = `${nombreArchivoBase}-${count}${extension}`;
+        const productoId = req.body.productoId;
+        finalName = `${nombreArchivoBase}-${productoId}${extension}`;
         fullPath = path.join(uploadPath, finalName);
       }
     } else {

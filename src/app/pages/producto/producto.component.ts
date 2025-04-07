@@ -261,7 +261,7 @@ export class ProductoComponent implements OnInit {
   
     // Si no se selecciona imagen y ya hay una imagen asignada al producto seleccionado, se mantiene
     if (!this.imagePreview && this.selectedProducto && this.selectedProducto.imagen) {
-      this.formData.imagen = this.selectedProducto.imagen;
+      this.formData.imagen = this.selectedProducto.imagen; // Mantener la imagen anterior si no se selecciona una nueva
     }
   
     // Si no está marcado, se asigna null a la marca
@@ -275,21 +275,25 @@ export class ProductoComponent implements OnInit {
     // Obtener la categoría del producto
     const categoriaObj = this.categorias.find(cat => cat.id === this.formData.id_categoria);
     const categoria = categoriaObj ? categoriaObj.nombre : 'sin_categoria';
-    const nuevoNombre = this.formData.nombre;  // Obtener el nuevo nombre
-    const id = Math.random().toString(36).substring(7);
-
-    if (this.selectedFile) {
-      const isUpdate = this.selectedProducto ? true : false;
   
-      this.apiService.uploadImage(this.selectedFile, nombre, tipo, categoria, isUpdate).subscribe(response => {
-        this.formData.imagen = response.filePath;
-        this.finalizarGuardadoProducto();
-      });
+    // Utilizamos el id del producto seleccionado si existe
+    const productoId = this.selectedProducto ? this.selectedProducto.id : null;
+    
+    const isUpdate = this.selectedProducto ? true : false; // Determinamos si es actualización o creación
+  
+    if (this.selectedFile) {
+      // Si hay un archivo seleccionado, lo subimos
+      this.apiService.uploadImage(this.selectedFile, nombre, tipo, categoria, productoId , isUpdate)
+        .subscribe(response => {
+          this.formData.imagen = response.filePath; // Asignamos la nueva imagen recibida
+          this.finalizarGuardadoProducto(); // Procedemos con la creación o actualización del producto
+        });
     } else {
       // Si no se seleccionó un archivo, solo finalizamos el guardado
       this.finalizarGuardadoProducto();
     }
   }
+  
   
   finalizarGuardadoProducto(): void {
     const accion = this.selectedProducto

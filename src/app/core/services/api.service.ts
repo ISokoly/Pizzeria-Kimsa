@@ -136,7 +136,7 @@ export class ApiService {
   }
 
   // Subir imágenes
-  uploadImage(file: File, name: string, tipo: string, categoria?: string, isUpdate: boolean = false): Observable<{ filePath: string }> {
+  uploadImage(file: File, name: string, tipo: string, categoria?: string, productoId?: number, isUpdate: boolean = false): Observable<{ filePath: string }> {
     const formData = new FormData();
     formData.append('nombre', name);
     formData.append('tipo', tipo);
@@ -144,9 +144,14 @@ export class ApiService {
     if (categoria) {
       formData.append('categoria', categoria);
     }
-    formData.append('isUpdate', isUpdate.toString());
+  
+    if (productoId) {
+      formData.append('productoId', productoId.toString());
+    }
 
-    formData.append('image', file);
+    formData.append('isUpdate', isUpdate.toString()); // Indicamos si es actualización
+  
+    formData.append('image', file); // Agregamos el archivo
   
     return this.http.post<{ filePath: string }>(`${this.apiUrl}/upload`, formData);
   }
