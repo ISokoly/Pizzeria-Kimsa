@@ -31,10 +31,11 @@ export class ViewComponent {
 
   sidenavWidth = computed(() => this.collapsed() ? '65px' : '250px');
   isUsuariosPage: boolean = false;
+  static estaSeleccionado: boolean;
 
   constructor(private router: Router, private apiService: ApiService) {
     this.router.events.subscribe(() => {
-      this.isUsuariosPage = this.router.url === '/view/usuarios';
+      this.isUsuariosPage = this.router.url.startsWith('/view/usuarios');
     });
   }
 

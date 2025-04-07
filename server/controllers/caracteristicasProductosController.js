@@ -35,7 +35,7 @@ exports.updateCaracteristicasProductos = (req, res) => {
   const data = req.body;
   CaracteristicasProductos.update(id, data, (err) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ nombre, ...data });
+    res.json({ id, ...data });
   });
 };
 

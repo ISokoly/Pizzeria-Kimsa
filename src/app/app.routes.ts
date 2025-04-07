@@ -7,6 +7,8 @@ import { UruariosComponent } from './pages/uruarios/uruarios.component';
 import { AuthGuard } from './core/guard/auth.guard';
 import { VentasComponent } from './pages/ventas/ventas.component';
 import { EstadisticasComponent } from './estadisticas/estadisticas.component';
+import { OtrosComponent } from './pages/uruarios/otros/otros.component';
+import { AdminGuard } from './core/guard/admin.guard';
 
 const usuarioGuardado = localStorage.getItem('usuario');
 const redireccionInicial = usuarioGuardado ? 'view' : 'login';
@@ -27,7 +29,8 @@ export const routes: Routes = [
       { path: 'categoria/producto/:nombreCategoria', component: ProductoComponent },
       { path: 'ventas', component: VentasComponent },
       { path: 'estadisticas', component: EstadisticasComponent },
-      { path: 'usuarios', component: UruariosComponent }
+      { path: 'usuarios', component: UruariosComponent },
+      { path: 'usuarios/otros', component: OtrosComponent, canActivate: [AdminGuard] }
     ]
   },
   {
