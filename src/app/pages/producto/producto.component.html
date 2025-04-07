@@ -2,15 +2,9 @@
   <div class="products-container">
     <h1 class="title">{{ nombreCategoria }}</h1>
     <div class="search-div">
-        
+
       <div class="search-bar">
-        <input
-          type="text"
-          [(ngModel)]="filtro"
-          placeholder="Buscar..."
-          class="search-input"
-        />
-      
+        <input type="text" [(ngModel)]="filtro" placeholder="Buscar..." class="search-input" />
         <div class="dropdown">
           <button class="dropdown-btn" (click)="mostrarOpciones = !mostrarOpciones">
             Buscar por: {{ filtroTipo }}
@@ -40,7 +34,14 @@
 
         <div *ngIf="producto.imagen">
           <div class="img-container horizontal-container">
-            <img [src]="producto.imagen" alt="Imagen del producto" class="preview-img img-horizontal">
+            @if ((caracteristicasMap.get(producto.id)?.length || 0) > 0) {
+            <img [src]="producto.imagen" alt="Imagen del producto"
+              (click)="abrirFormularioCaracteristiscasProducto(producto)" class="preview-img img-horizontal">
+            }
+            @else {
+            <img [src]="producto.imagen" alt="Imagen del producto"
+              (click)="abrirFormularioAgregarCaracteristiscasProducto(producto)" class="preview-img img-horizontal">
+            }
           </div>
         </div>
         <p class="product-description">
@@ -61,7 +62,6 @@
 
 <div *ngIf="mostrarFormularioProducto">
 
-  <body class="modal-abierto"></body>
   <div class="modal">
     <div class="form-modal">
       <h2 class="form-title">
@@ -88,7 +88,8 @@
               placeholder="Escriba o seleccione una marca" class="form-input" autocomplete="off" />
           </label>
           <ul *ngIf="mostrarLista" class="marcas-lista">
-            <li *ngFor="let marca of marcasFiltradas" (click)="seleccionarMarca(marca.nombre)" (mousedown)="seleccionarMarca(marca.nombre)">
+            <li *ngFor="let marca of marcasFiltradas" (click)="seleccionarMarca(marca.nombre)"
+              (mousedown)="seleccionarMarca(marca.nombre)">
               {{ marca.nombre }}
             </li>
           </ul>
@@ -120,7 +121,6 @@
 <div *ngIf="marcado">
   <div *ngIf="mostrarFormularioMarca">
 
-    <body class="modal-abierto"></body>
     <div class="modal">
       <div class="form-modal">
         <h2 class="form-title">
@@ -162,7 +162,6 @@
 @if (mostrarFormularioCaracteristica) {
 <ng-container>
 
-  <body class="modal-abierto"></body>
   <div class="modal">
     <div class="form-modal">
       <h2 class="form-title">Características actuales</h2>
@@ -187,7 +186,6 @@
 
 @else if (mostrarModalAgregarCaracteristica) {
 
-<body class="modal-abierto"></body>
 <div class="modal">
   <div class="form-modal">
     <h2 class="form-title">Agregar Característica</h2>

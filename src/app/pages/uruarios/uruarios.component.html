@@ -34,55 +34,55 @@
 </div>
 
 @if(mostrarFormulario){
-  <div class="modal">
-    <div class="form-modal">
-      @if (userSeleccionado) {
-      <h2 class="form-title">Editar Usuario</h2>
-      }
-      <div class="form-container">
-        <div class="form">
-          <label>Usuario:
-            <input type="text" class="form-input" name="usuario" placeholder="Escriba el Usuario"
-              [(ngModel)]="nuevoEmpleado.usuario" autocomplete="off">
-          </label>
-          <label>Nombre:
-            <input type="text" class="form-input" placeholder="Escriba los nombres del Usuario"
-              [(ngModel)]="nuevoEmpleado.nombre" autocomplete="off">
-          </label>
-          <label>Apellido:
-            <input type="text" class="form-input" placeholder="Escriba los apellidos del Usuario"
-              [(ngModel)]="nuevoEmpleado.apellido" autocomplete="off">
-          </label>
-          <label>DNI:
-            <input type="text" class="form-input" placeholder="Escriba el DNI Usuario" [(ngModel)]="nuevoEmpleado.dni"
-              autocomplete="off">
-          </label>
-          <label>Dirección:
-            <input type="text" class="form-input" placeholder="Escriba la direccion del Usuario"
-              [(ngModel)]="nuevoEmpleado.direccion" autocomplete="off">
-          </label>
-          <label>Teléfono:
-            <input type="text" class="form-input" placeholder="Escriba el telefono del Usuario"
-              [(ngModel)]="nuevoEmpleado.telefono" autocomplete="off">
-          </label>
-          <label>Contraseña:
-            @if (userSeleccionado) {
-            <input type="password" class="form-input" placeholder="*********"
-              [ngModel]="userSeleccionado ? '' : nuevoEmpleado.contrasena"
-              (ngModelChange)="nuevoEmpleado.contrasena = $event" autocomplete="new-password">
-            }
-            @else {
-            <input type="password" class="form-input" placeholder="Escriba la contraseña"
-              [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
-            }
-          </label>
-        </div>
-  
-        <div class="botones">
-          <button class="form-btn-verde" (click)="guardarEmpleado()">Guardar</button>
-          <button class="form-btn-gris" (click)="cerrarFormulario()">Cancelar</button>
-        </div>
+<div class="modal">
+  <div class="form-modal">
+    @if (userSeleccionado) {
+    <h2 class="form-title">Editar Usuario</h2>
+    }
+    <div class="form-container">
+      <div class="form">
+        <label>Usuario:
+          <input type="text" class="form-input" name="usuario" placeholder="Escriba el Usuario"
+            [(ngModel)]="nuevoEmpleado.usuario" autocomplete="off">
+        </label>
+        <label>Nombre:
+          <input type="text" class="form-input" placeholder="Escriba los nombres del Usuario"
+            [(ngModel)]="nuevoEmpleado.nombre" autocomplete="off">
+        </label>
+        <label>Apellido:
+          <input type="text" class="form-input" placeholder="Escriba los apellidos del Usuario"
+            [(ngModel)]="nuevoEmpleado.apellido" autocomplete="off">
+        </label>
+        <label>DNI:
+          <input type="text" class="form-input" placeholder="Escriba el DNI Usuario" [(ngModel)]="nuevoEmpleado.dni"
+            autocomplete="off">
+        </label>
+        <label>Dirección:
+          <input type="text" class="form-input" placeholder="Escriba la direccion del Usuario"
+            [(ngModel)]="nuevoEmpleado.direccion" autocomplete="off">
+        </label>
+        <label>Teléfono:
+          <input type="text" class="form-input" placeholder="Escriba el telefono del Usuario"
+            [(ngModel)]="nuevoEmpleado.telefono" autocomplete="off">
+        </label>
+        <label>Contraseña:
+          @if (userSeleccionado) {
+          <input type="password" class="form-input" placeholder="*********"
+            [ngModel]="userSeleccionado ? '' : nuevoEmpleado.contrasena"
+            (ngModelChange)="nuevoEmpleado.contrasena = $event" autocomplete="new-password">
+          }
+          @else {
+          <input type="password" class="form-input" placeholder="Escriba la contraseña"
+            [(ngModel)]="nuevoEmpleado.contrasena" autocomplete="new-password">
+          }
+        </label>
+      </div>
+
+      <div class="botones">
+        <button class="form-btn-verde" (click)="guardarEmpleado()">Guardar</button>
+        <button class="form-btn-gris" (click)="cerrarFormulario()">Cancelar</button>
       </div>
     </div>
   </div>
-  }
+</div>
+}
