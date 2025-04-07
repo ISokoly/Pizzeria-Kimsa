@@ -142,17 +142,16 @@ const storage = multer.diskStorage({
     }
 
     fs.mkdirSync(uploadPath, { recursive: true }); // Aseguramos que la ruta exista
-
-    cb(null, uploadPath); // Usamos la ruta calculada
+    cb(null, uploadPath);
   },
+
   filename: (req, file, cb) => {
     const nombreArchivoBase = req.body.nombre || 'imagen';
     const tipo = req.body.tipo;
     const categoria = req.body.categoria || 'sin_categoria';
-    const extension = '.jpg'; // Puedes ajustar la extensión según el tipo de archivo
+    const extension = '.jpg';
     let uploadPath = 'uploads';
 
-    // Definimos la ruta de destino
     if (tipo === 'productos' && categoria) {
       uploadPath = `uploads/productos/${categoria}`;
     } else if (tipo === 'categorias') {
@@ -163,15 +162,23 @@ const storage = multer.diskStorage({
     let finalName = `${nombreArchivoBase}-${count}${extension}`;
     let fullPath = path.join(uploadPath, finalName);
 
-    // Si la solicitud es de actualización y existe el archivo, sobrescribimos
+    // Si estamos actualizando la imagen
     if (req.body.isUpdate === 'true') {
-      while (fs.existsSync(fullPath)) {
-        const productoId = req.body.productoId;
+      const productoId = req.body.productoId; // Asegúrate de que se pase correctamente el productoId
+      const imagenAnterior = `${nombreArchivoBase}-${productoId}${extension}`;
+      const imagenAnteriorRuta = path.join(uploadPath, imagenAnterior);
+
+      // Verificar si la imagen anterior existe
+      if (fs.existsSync(imagenAnteriorRuta)) {
+        // Eliminar la imagen anterior
+        fs.unlinkSync(imagenAnteriorRuta);
+
+        // Renombrar la nueva imagen con el productoId
         finalName = `${nombreArchivoBase}-${productoId}${extension}`;
         fullPath = path.join(uploadPath, finalName);
       }
     } else {
-      // Si no es actualización, creamos un nuevo nombre para el archivo
+      // Si no estamos actualizando, solo asignamos el nombre con un contador si ya existe
       while (fs.existsSync(fullPath)) {
         count++;
         finalName = `${nombreArchivoBase}-${count}${extension}`;
@@ -182,6 +189,8 @@ const storage = multer.diskStorage({
     cb(null, finalName);
   }
 });
+
+
 
 const upload = multer({ storage });
 
