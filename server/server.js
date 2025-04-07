@@ -141,19 +141,18 @@ const storage = multer.diskStorage({
       uploadPath = 'uploads/categorias';
     }
 
-    fs.mkdirSync(uploadPath, { recursive: true });
-    fs.mkdirSync(tempPath, { recursive: true });
+    fs.mkdirSync(uploadPath, { recursive: true }); // Aseguramos que la ruta exista
 
-    cb(null, uploadPath);
+    cb(null, uploadPath); // Usamos la ruta calculada
   },
   filename: (req, file, cb) => {
     const nombreArchivoBase = req.body.nombre || 'imagen';
     const tipo = req.body.tipo;
     const categoria = req.body.categoria || 'sin_categoria';
-
-    const extension = '.jpg';
+    const extension = '.jpg'; // Puedes ajustar la extensión según el tipo de archivo
     let uploadPath = 'uploads';
 
+    // Definimos la ruta de destino
     if (tipo === 'productos' && categoria) {
       uploadPath = `uploads/productos/${categoria}`;
     } else if (tipo === 'categorias') {
@@ -164,10 +163,20 @@ const storage = multer.diskStorage({
     let finalName = `${nombreArchivoBase}-${count}${extension}`;
     let fullPath = path.join(uploadPath, finalName);
 
-    while (fs.existsSync(fullPath)) {
-      count++;
-      finalName = `${nombreArchivoBase}-${count}${extension}`;
-      fullPath = path.join(uploadPath, finalName);
+    // Si la solicitud es de actualización y existe el archivo, sobrescribimos
+    if (req.body.isUpdate === 'true') {
+      while (fs.existsSync(fullPath)) {
+        count++;
+        finalName = `${nombreArchivoBase}-${count}${extension}`;
+        fullPath = path.join(uploadPath, finalName);
+      }
+    } else {
+      // Si no es actualización, creamos un nuevo nombre para el archivo
+      while (fs.existsSync(fullPath)) {
+        count++;
+        finalName = `${nombreArchivoBase}-${count}${extension}`;
+        fullPath = path.join(uploadPath, finalName);
+      }
     }
 
     cb(null, finalName);
