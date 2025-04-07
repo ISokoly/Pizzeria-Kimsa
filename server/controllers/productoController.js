@@ -57,22 +57,28 @@ const actualizarProductoNormal = (id, data, res) => {
 const actualizarProductoConRenombrado = (id, data, imagenAnterior, categoria, res) => {
   const nombreImagen = path.basename(imagenAnterior);
   const extension = path.extname(nombreImagen);
-  const nuevoNombreImagen = `${data.nombre.replace(/\s+/g, ' ')}${extension}`;
+
+  // Renombramos la imagen usando el nombre del producto y el id
+  const nuevoNombreImagen = `${data.nombre.replace(/\s+/g, ' ').replace(/[^a-zA-Z0-9]/g, '')}-${id}${extension}`;
 
   const oldPath = path.join(__dirname, '../uploads/productos', categoria, nombreImagen);
   const newPath = path.join(__dirname, '../uploads/productos', categoria, nuevoNombreImagen);
 
+  // Renombramos la imagen en el sistema de archivos
   fs.rename(oldPath, newPath, (err) => {
-    if (!err) {
-      data.imagen = `http://localhost:3000/uploads/productos/${categoria}/${nuevoNombreImagen}`;
-    }
+    if (err) return res.status(500).json({ error: 'Error al renombrar la imagen' });
 
+    // Actualizamos la URL de la imagen en la base de datos
+    data.imagen = `http://localhost:3000/uploads/productos/${categoria}/${nuevoNombreImagen}`;
+
+    // Actualizamos el producto en la base de datos
     Producto.update(id, data, (err) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ id, ...data });
     });
   });
 };
+
 
 exports.updateProducto = (req, res) => {
   const id = req.params.id;

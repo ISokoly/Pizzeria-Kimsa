@@ -30,7 +30,6 @@ export class CategoriasComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategorias();
-    this.loadTiposMarcas();
   }
 
   loadCategorias(): void {
@@ -98,26 +97,13 @@ export class CategoriasComponent implements OnInit {
   
           // Después de subir la imagen, guarda la categoría
           if (this.selectedCategoria) {
-            const nombreAnterior = this.selectedCategoria.nombre;
-            const marcaAnterior = this.selectedCategoria.marca; // Estado anterior de 'marca'
-  
             this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
               this.loadCategorias();
-              this.updateTiposMarcaIfExists(nombreAnterior, nombreCategoria);
-  
-              // Si antes 'marca' era falso y ahora es verdadero, intenta crear tipos_marcas
-              if (!marcaAnterior && this.formData.marca) {
-                this.createTiposMarcaIfNotExists(nombreCategoria);
-              }
-  
               this.resetForm();
             });
   
           } else {
             this.apiService.createCategoria(this.formData).subscribe(() => {
-              if (this.formData.marca) {
-                this.createTiposMarcaIfNotExists(nombreCategoria);
-              }
               this.loadCategorias();
               this.resetForm();
               location.reload();
@@ -130,26 +116,13 @@ export class CategoriasComponent implements OnInit {
       } else {
         // Si no hay archivo seleccionado, guarda la categoría directamente
         if (this.selectedCategoria) {
-          const nombreAnterior = this.selectedCategoria.nombre;
-          const marcaAnterior = this.selectedCategoria.marca; // Estado anterior de 'marca'
-  
           this.apiService.updateCategoria(this.selectedCategoria.id, this.formData).subscribe(() => {
             this.loadCategorias();
-            this.updateTiposMarcaIfExists(nombreAnterior, nombreCategoria);
-  
-            // Si antes 'marca' era falso y ahora es verdadero, intenta crear tipos_marcas
-            if (!marcaAnterior && this.formData.marca) {
-              this.createTiposMarcaIfNotExists(nombreCategoria);
-            }
-  
             this.resetForm();
           });
   
         } else {
           this.apiService.createCategoria(this.formData).subscribe(() => {
-            if (this.formData.marca) {
-              this.createTiposMarcaIfNotExists(nombreCategoria);
-            }
             this.loadCategorias();
             this.resetForm();
             location.reload();
@@ -162,30 +135,6 @@ export class CategoriasComponent implements OnInit {
     });
   }
   
-
-  private createTiposMarcaIfNotExists(nombreCategoria: string): void {
-    this.apiService.getTiposMarcaByNombre(nombreCategoria).subscribe((tipoMarca: any) => {
-      if (!tipoMarca || (Array.isArray(tipoMarca) && tipoMarca.length === 0)) {
-        const nuevoTipoMarca = { nombre: nombreCategoria };
-        this.apiService.createTiposMarca(nuevoTipoMarca).subscribe(() => {
-          console.log('Tipo de marca creado:', nuevoTipoMarca);
-          this.loadTiposMarcas();
-        });
-      }
-    });
-  }
-
-  private updateTiposMarcaIfExists(nombreAnterior: string, nuevoNombre: string): void {
-    this.apiService.getTiposMarcaByNombre(nombreAnterior).subscribe((tipoMarca: any) => {
-      if (tipoMarca && tipoMarca.length > 0) {
-        const data = { nombre: nuevoNombre };
-        this.apiService.updateTiposMarca(nombreAnterior, data).subscribe(() => {
-          console.log(`Tipo de marca actualizado: ${nombreAnterior} -> ${nuevoNombre}`);
-          this.loadTiposMarcas();
-        });
-      }
-    });
-  }
 
   editCategoria(categoria: any): void {
     this.selectedCategoria = categoria;

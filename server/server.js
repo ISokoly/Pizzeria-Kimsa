@@ -15,13 +15,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-const tempPath = path.join(__dirname, 'uploads', 'temp');  // Carpeta temporal
 
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'pizzeria'
+  password: ''
 });
 
 connection.connect(async (err) => {
@@ -129,13 +127,14 @@ app.use('/api', productoRoutes);
 app.use('/api', tiposMarcaRoutes);
 app.use('/api', caracteristicaProductosRoutes);
 
+const tempPath = path.join(__dirname, 'uploads/temp');
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const tipo = req.body.tipo;
     const categoria = req.body.categoria;
 
     let uploadPath = 'uploads';
-
     if (tipo === 'productos' && categoria) {
       uploadPath = `uploads/productos/${categoria}`;
     } else if (tipo === 'categorias') {
@@ -148,52 +147,69 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    const nombreArchivo = req.body.nombre || 'imagen';
+    const nombreArchivoBase = req.body.nombre || 'imagen';
+    const tipo = req.body.tipo;
+    const categoria = req.body.categoria || 'sin_categoria';
+
     const extension = '.jpg';
-    cb(null, nombreArchivo + extension);
+    let uploadPath = 'uploads';
+
+    if (tipo === 'productos' && categoria) {
+      uploadPath = `uploads/productos/${categoria}`;
+    } else if (tipo === 'categorias') {
+      uploadPath = 'uploads/categorias';
+    }
+
+    let count = 1;
+    let finalName = `${nombreArchivoBase}-${count}${extension}`;
+    let fullPath = path.join(uploadPath, finalName);
+
+    while (fs.existsSync(fullPath)) {
+      count++;
+      finalName = `${nombreArchivoBase}-${count}${extension}`;
+      fullPath = path.join(uploadPath, finalName);
+    }
+
+    cb(null, finalName);
   }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 app.post('/api/upload', upload.single('image'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No se envió una imagen' });
-  }
-
-  const tipo = req.body.tipo;
-  const categoria = req.body.categoria;
-  let imageUrl = `http://localhost:${port}/uploads`;
-
-  const filePath = req.file.path;
-
   try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No se envió una imagen' });
+    }
+
+    const { tipo, categoria } = req.body;
+    const filename = req.file.filename;
+    const filePath = req.file.path;
+    const tempFilePath = path.join(tempPath, filename);
+
+    let imageUrl = `http://localhost:${port}/uploads`;
+
     const image = sharp(filePath);
     const metadata = await image.metadata();
 
-    const tempFilePath = path.join(tempPath, req.file.filename);
+    const resizedImage = metadata.height > metadata.width
+      ? image.resize(800, 1200, { fit: 'fill' })
+      : image.resize(1200, 800, { fit: 'fill' });
 
-    if (metadata.height > metadata.width) {
-      await image.resize(800, 1200, { fit: 'fill' });
-    } else {
-      await image.resize(1200, 800, { fit: 'fill' });
-    }
-
-    await image.toFile(tempFilePath);
-
+    await resizedImage.toFile(tempFilePath);
     fs.renameSync(tempFilePath, filePath);
 
     if (tipo === 'productos' && categoria) {
-      imageUrl += `/productos/${categoria}/${req.file.filename}`;
+      imageUrl += `/productos/${categoria}/${filename}`;
     } else if (tipo === 'categorias') {
-      imageUrl += `/categorias/${req.file.filename}`;
+      imageUrl += `/categorias/${filename}`;
     }
 
     res.json({ filePath: imageUrl });
 
   } catch (error) {
-    console.error('Error al redimensionar la imagen', error);
-    return res.status(500).json({ message: 'Error al redimensionar la imagen' });
+    console.error('Error al procesar la imagen:', error);
+    res.status(500).json({ message: 'Error al procesar la imagen' });
   }
 });
 

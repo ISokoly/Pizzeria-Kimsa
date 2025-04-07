@@ -478,3 +478,59 @@ body.modal-abierto {
 .form-btn-gris:hover {
   background: #555;
 }
+/* Contenedor principal */
+.header {
+  display: flex;
+  justify-content: space-between; /* Esto ayuda a separar el nombre y la barra de búsqueda */
+  align-items: center;
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+/* Barra de búsqueda */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;  /* Esto mueve la barra de búsqueda hacia la derecha */
+}
+
+.search-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 200px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  padding: 8px;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  border-radius: 6px;
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.dropdown-menu li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background: #eee;
+}

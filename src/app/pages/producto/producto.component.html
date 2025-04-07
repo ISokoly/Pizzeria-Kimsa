@@ -2,7 +2,31 @@
   <div class="products-container">
     <h1 class="title">{{ nombreCategoria }}</h1>
     <div class="products-grid">
-      <div class="product-item" *ngFor="let producto of productos">
+      <div class="search-div">
+        
+        <div class="search-bar">
+          <input
+            type="text"
+            [(ngModel)]="filtro"
+            placeholder="Buscar..."
+            class="search-input"
+          />
+        
+          <div class="dropdown">
+            <button class="dropdown-btn" (click)="mostrarOpciones = !mostrarOpciones">
+              Buscar por: {{ filtroTipo }}
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <ul *ngIf="mostrarOpciones" class="dropdown-menu">
+              <li (click)="cambiarFiltroTipo('nombre')">Nombre</li>
+              <li (click)="cambiarFiltroTipo('caracteristica')">Característica</li>
+              <li *ngIf="marcado" (click)="cambiarFiltroTipo('marca')">Marca</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-item" *ngFor="let producto of productosFiltrados()">
 
         @if ((caracteristicasMap.get(producto.id)?.length || 0) > 0) {
         <h2 (click)="abrirFormularioCaracteristiscasProducto(producto)" class="product-name">
@@ -65,7 +89,7 @@
               placeholder="Escriba o seleccione una marca" class="form-input" autocomplete="off" />
           </label>
           <ul *ngIf="mostrarLista" class="marcas-lista">
-            <li *ngFor="let marca of marcasFiltradas" (mousedown)="seleccionarMarca(marca.nombre)">
+            <li *ngFor="let marca of marcasFiltradas" (click)="seleccionarMarca(marca.nombre)" (mousedown)="seleccionarMarca(marca.nombre)">
               {{ marca.nombre }}
             </li>
           </ul>

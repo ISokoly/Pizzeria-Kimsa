@@ -2,6 +2,7 @@ const Categoria = require('../models/categoriaModel');
 const path = require('path');
 const fs = require('fs'); 
 const Producto = require('../models/productoModel');
+const pool = require('../config/db')
 
 exports.getAllCategorias = (req, res) => {
   Categoria.getAll((err, results) => {
@@ -23,9 +24,23 @@ exports.createCategoria = (req, res) => {
   const data = req.body;
   Categoria.create(data, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ id: results.insertId, ...data });
+    
+    // Si 'marca' es verdadero, también se inserta en 'tipos_marcas'
+    if (data.marca) {
+      pool.query(
+        'INSERT IGNORE INTO tipos_marcas (nombre) VALUES (?)',
+        [data.nombre],
+        (err, results) => {
+          if (err) return res.status(500).json({ error: err.message });
+          res.json({ id: results.insertId, ...data });
+        }
+      );
+    } else {
+      res.json({ id: results.insertId, ...data });
+    }
   });
 };
+
 
 const eliminarImagenHuerfana = (imagen) => {
   const imagenNombre = path.basename(imagen);
@@ -109,14 +124,52 @@ exports.updateCategoria = (req, res) => {
     const categoriaAnterior = results[0];
     const nombreAnterior = categoriaAnterior.nombre;
     const imagenAnterior = categoriaAnterior.imagen;
+    const marcaAnterior = categoriaAnterior.marca; // Guardamos el valor de la marca anterior
+    const marcaActual = data.marca; // Guardamos el valor de la marca actual
 
     if (nombreAnterior !== data.nombre && imagenAnterior) {
       actualizarCategoriaConRenombrado(id, data, nombreAnterior, imagenAnterior, res);
     } else {
       actualizarCategoriaNormal(id, data, nombreAnterior, res);
     }
+
+    // Ahora llamamos a la función para manejar los tipos de marcas
+    actualizarTiposMarcas(nombreAnterior, data.nombre, marcaAnterior, marcaActual, res);
   });
 };
+
+async function actualizarTiposMarcas(nombreAnterior, nuevoNombre, marcaAnterior, marcaActual, res) {
+  try {
+    // Si la marca pasó de false a true, creamos el tipo de marca si no existe
+    if (!marcaAnterior && marcaActual) {
+      const [rows] = await pool.promise().query(
+        'SELECT * FROM tipos_marcas WHERE nombre = ?',
+        [nuevoNombre]
+      );
+
+      // Si no existe un tipo de marca con este nombre, lo creamos
+      if (rows.length === 0) {
+        await pool.promise().query(
+          'INSERT INTO tipos_marcas (nombre) VALUES (?)',
+          [nuevoNombre]
+        );
+        console.log('Nuevo tipo de marca creado');
+      }
+    }
+
+    // Si la marca no cambió o incluso si pasó de true a false, actualizamos el nombre de los tipos de marcas
+    await pool.promise().query(
+      'UPDATE tipos_marcas SET nombre = ? WHERE nombre = ?',
+      [nuevoNombre, nombreAnterior]
+    );
+    console.log('Tipos de marcas actualizados correctamente');
+
+  } catch (err) {
+    console.error('Error al manejar tipos de marcas:', err);
+    return res.status(500).json({ error: 'Error al manejar tipos de marcas' });
+  }
+}
+
 
 exports.deleteCategoria = (req, res) => {
   const id = req.params.id;

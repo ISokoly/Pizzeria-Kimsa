@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MarcasService } from '../../core/services/marcas.service';
 
 @Component({
   selector: 'app-producto',
@@ -29,6 +30,7 @@ export class ProductoComponent implements OnInit {
   selectedMarcaNombre: string = '';
   mostrarLista = false;
   marcasFiltradas = [...this.marcas];
+  marcaMap = new Map<number, string>();
 
   caracteristicas: any[] = [];
   formCaracteristica = { nombre_caracteristica: '', valor_caracteristica: '' };
@@ -38,7 +40,12 @@ export class ProductoComponent implements OnInit {
   sinCaracteristicas: boolean = false;
 
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute) { }
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private marcasService: MarcasService) { 
+    this.marcasService.getMarcas().subscribe(marcas => {
+      this.marcas = marcas;
+      this.marcasFiltradas = marcas;
+    });
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -49,6 +56,11 @@ export class ProductoComponent implements OnInit {
         this.nombreCategoria = nombreCategoria;
         this.loadProductos();
       }
+    });
+
+    this.apiService.getMarcas().subscribe((marcas: any[]) => {
+      this.marcas = marcas;
+          this.marcaMap = new Map(marcas.map(m => [m.id, m.nombre]));
     });
 
     this.loadCategorias();
@@ -73,11 +85,67 @@ export class ProductoComponent implements OnInit {
     }
   }
 
+  filtro: string = '';
+  filtroTipo: 'nombre' | 'caracteristica' | 'marca' = 'nombre';
+  mostrarOpciones: boolean = false;
+  
+  cambiarFiltroTipo(tipo: 'nombre' | 'caracteristica' | 'marca') {
+    this.filtroTipo = tipo;
+    this.mostrarOpciones = false;
+  }
+  
+  productosFiltrados() {
+    const filtroLower = this.filtro.toLowerCase();
+  
+    return this.productos.filter(producto => {
+      // Verificar si la categoría tiene el campo 'marca' activado
+      const categoria = this.categorias.find(cat => cat.id === producto.id_categoria);
+      const mostrarMarca = categoria ? categoria.marca : false;
+  
+      if (this.filtroTipo === 'nombre') {
+        return producto.nombre.toLowerCase().includes(filtroLower);
+      } else if (this.filtroTipo === 'caracteristica') {
+        const caracteristicas = this.caracteristicasMap.get(producto.id) || [];
+  
+        return caracteristicas.some((c: any) =>
+          c.nombre_caracteristica?.toLowerCase().includes(filtroLower) ||
+          c.valor_caracteristica?.toLowerCase().includes(filtroLower)
+        );
+      } else if (this.filtroTipo === 'marca' && mostrarMarca) {
+        const nombreMarca = this.marcaMap.get(producto.id_marca);
+        return nombreMarca?.toLowerCase().includes(filtroLower);
+      }
+  
+      return true;
+    });
+  }
+  
+
   cancelEditProducto(): void {
     this.selectedProducto = null;
-    this.resetForm();
+    this.resetForm('producto');
     this.mostrarFormularioProducto = false;
     document.body.style.overflow = 'auto'; // Restaura el scrol
+  }
+
+  validateFormData(): boolean {
+    if (!this.formData.nombre || !this.formData.descripcion || !this.formData.precio || !this.formData.id_categoria) {
+      alert('Todos los campos del producto son obligatorios.');
+      return false;
+    }
+    if (isNaN(this.formData.precio) || this.formData.precio <= 0) {
+      alert('El precio debe ser un valor positivo.');
+      return false;
+    }
+    return true;
+  }
+  
+  validateMarcaData(): boolean {
+    if (!this.formMarca.nombre) {
+      alert('El nombre de la marca es obligatorio.');
+      return false;
+    }
+    return true;
   }
 
   loadProductos(): void {
@@ -94,25 +162,28 @@ export class ProductoComponent implements OnInit {
     );
   }
 
-  loadMarcas(): void {
-    const tipoMarcaSeleccionado = Number(this.formMarca.tipos_marcas);
-
-    if (isNaN(tipoMarcaSeleccionado) || tipoMarcaSeleccionado === 0) {
-      this.marcas = [];
-      return;
-    }
-
+  loadMarcas(tipoMarcaId?: number): void {
     this.apiService.getMarcas().subscribe(
       (data: { id: number; nombre: string; tipos_marcas: number }[]) => {
-        this.marcas = data.filter(marca => marca.tipos_marcas === tipoMarcaSeleccionado);
-        console.log('Marcas filtradas:', this.marcas);
+        // Filtrar solo si se proporciona un tipo
+        this.marcas = tipoMarcaId && tipoMarcaId > 0
+          ? data.filter(marca => marca.tipos_marcas === tipoMarcaId)
+          : data;
+  
+        // Crear el Map para acceder rápidamente a nombres de marcas por ID
+        this.marcaMap = new Map<number, string>();
+        this.marcas.forEach(marca => {
+          this.marcaMap.set(marca.id, marca.nombre);
+        });
+  
+        console.log('Marcas cargadas:', this.marcas);
       },
       error => {
         console.error('Error cargando marcas:', error);
       }
     );
-  }
-
+  }  
+  
   filtrarMarcas() {
     this.marcasFiltradas = this.marcas.filter((marca) =>
       marca.nombre.toLowerCase().includes(this.selectedMarcaNombre.toLowerCase())
@@ -126,7 +197,11 @@ export class ProductoComponent implements OnInit {
   }
 
   seleccionarMarca(nombre: string) {
-    this.selectedMarcaNombre = nombre;
+    const marcaSeleccionada = this.marcas.find(m => m.nombre === nombre);
+    if (marcaSeleccionada) {
+      this.selectedMarcaNombre = marcaSeleccionada.nombre;
+      this.formData.id_marca = marcaSeleccionada.id; // <-- Aquí asignas el ID correctamente
+    }
     this.mostrarLista = false;
   }
 
@@ -147,7 +222,7 @@ export class ProductoComponent implements OnInit {
           this.marcado = categoriaEncontrada.marca;
 
           if (this.marcado) {
-            this.loadMarcas(); // Cargar marcas si la categoría las requiere
+            this.loadMarcas();
           }
         }
       },
@@ -182,31 +257,40 @@ export class ProductoComponent implements OnInit {
   }
 
   saveProducto(): void {
+    if (!this.validateFormData()) return;
+  
+    // Si no se selecciona imagen y ya hay una imagen asignada al producto seleccionado, se mantiene
     if (!this.imagePreview && this.selectedProducto && this.selectedProducto.imagen) {
       this.formData.imagen = this.selectedProducto.imagen;
     }
-
+  
+    // Si no está marcado, se asigna null a la marca
     if (!this.marcado) {
       this.formData.id_marca = null;
     }
-
+  
     const nombre = this.formData.nombre;
     const tipo = 'productos';
-
-    // Obtener el nombre de la categoría a partir del id_categoria
+  
+    // Obtener la categoría del producto
     const categoriaObj = this.categorias.find(cat => cat.id === this.formData.id_categoria);
     const categoria = categoriaObj ? categoriaObj.nombre : 'sin_categoria';
+    const nuevoNombre = this.formData.nombre;  // Obtener el nuevo nombre
+    const id = Math.random().toString(36).substring(7);
 
     if (this.selectedFile) {
-      this.apiService.uploadImage(this.selectedFile, nombre, tipo, categoria).subscribe(response => {
+      const isUpdate = this.selectedProducto ? true : false;
+  
+      this.apiService.uploadImage(this.selectedFile, nombre, tipo, categoria, isUpdate).subscribe(response => {
         this.formData.imagen = response.filePath;
         this.finalizarGuardadoProducto();
       });
     } else {
+      // Si no se seleccionó un archivo, solo finalizamos el guardado
       this.finalizarGuardadoProducto();
     }
   }
-
+  
   finalizarGuardadoProducto(): void {
     const accion = this.selectedProducto
       ? this.apiService.updateProducto(this.selectedProducto.id, this.formData)
@@ -215,13 +299,13 @@ export class ProductoComponent implements OnInit {
     accion.subscribe(() => {
       console.log(this.selectedProducto ? 'Producto actualizado' : 'Producto creado', this.formData);
       this.loadProductos();
-      this.resetForm();
+      this.resetForm('producto');
       location.reload();
     });
 
     this.mostrarFormularioProducto = false;
   }
-
+  
   editProducto(producto: any): void {
     this.selectedProducto = producto;
     this.formData = { ...producto };
@@ -233,8 +317,9 @@ export class ProductoComponent implements OnInit {
       this.imagePreview = producto.imagen;
     }
 
-    this.nombreCategoria = producto.categoria;
-
+    this.loadMarcas();
+    const marca = this.marcas.find(m => m.id === producto.id_marca);
+    this.selectedMarcaNombre = marca ? marca.nombre : '';
     this.mostrarFormularioProducto = true;
   }
 
@@ -246,18 +331,24 @@ export class ProductoComponent implements OnInit {
     });
   }
 
-  resetForm(): void {
-    this.formData = { nombre: '', descripcion: '', precio: 0, id_categoria: this.formData.id_categoria, id_marca: null, imagen: '' };
-    this.selectedProducto = null;
-    this.imagePreview = null;
-    this.selectedMarcaNombre = '';
+  resetForm(form: string): void {
+    if (form === 'producto') {
+      this.formData = { nombre: '', descripcion: '', precio: 0, id_categoria: this.formData.id_categoria, id_marca: null, imagen: '' };
+      this.selectedProducto = null;
+      this.imagePreview = null;
+      this.selectedMarcaNombre = '';
+    }
+    if (form === 'marca') {
+      this.formMarca = { nombre: '', tipos_marcas: this.formMarca.tipos_marcas };
+      this.selectedMarca = null;
+    }
   }
 
   mostrarFormularioProducto = false; // Estado para mostrar u ocultar el formulario
 
   abrirFormularioProducto(producto: any = null) {
     if (!producto) {
-      this.resetForm();
+      this.resetForm('producto');
       this.selectedMarcaNombre = ''; // Reiniciar el campo de marca
     } else {
       this.selectedProducto = producto;
@@ -290,17 +381,11 @@ export class ProductoComponent implements OnInit {
     document.body.style.overflow = 'hidden';
   }
 
-
   cerrarFormularioMarca() {
     this.selectedMarca = null;
     this.mostrarFormularioMarca = false;
     document.body.style.overflow = 'auto';
-    this.resetFormMarca();
-  }
-
-  resetFormMarca(): void {
-    this.formMarca = { nombre: '', tipos_marcas: this.formMarca.tipos_marcas };
-    this.selectedMarca = null;
+    this.resetForm('marca');
   }
 
   saveMarca(): void {
