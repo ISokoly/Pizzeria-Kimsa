@@ -27,6 +27,7 @@ export class ProductoComponent implements OnInit {
   formMarca = { nombre: '', tipos_marcas: '' };
   selectedMarca: any = null;
   mostrarFormularioMarca = false;
+  mostrarFormularioAgregarMarca = false;
   selectedMarcaNombre: string = '';
   mostrarLista = false;
   marcasFiltradas = [...this.marcas];
@@ -379,11 +380,26 @@ export class ProductoComponent implements OnInit {
     document.body.style.overflow = 'auto'; // Restaura el scroll
   }
 
-  abrirFormularioMarca(marca: any = null) {
+  abrirFormularioAgregarMarca(marca: any = null) {
     this.selectedMarcaNombre = ''; // Reiniciar el campo de marca
     this.selectedMarca = marca;
-    this.mostrarFormularioMarca = true;
+    this.mostrarFormularioAgregarMarca = true;
+    this.mostrarFormularioMarca = false;
     document.body.style.overflow = 'hidden';
+  }
+
+  cerrarFormularioAgregarMarca() {
+    this.selectedMarca = null;
+    this.mostrarFormularioAgregarMarca = false;
+    this.mostrarFormularioMarca = true;
+    document.body.style.overflow = 'auto';
+    this.resetForm('marca');
+  }
+
+  abrirFormularioMarca(): void {
+    this.mostrarFormularioMarca = true;
+    this.loadMarcas();
+    document.body.style.overflow = 'hidden'; // Bloquea el scroll
   }
 
   cerrarFormularioMarca() {
@@ -395,32 +411,51 @@ export class ProductoComponent implements OnInit {
 
   saveMarca(): void {
     if (!this.formMarca.nombre) {
-      console.warn('El nombre de la marca es obligatorio');
       return;
     }
 
     if (this.selectedMarca) {
       this.apiService.updateMarca(this.selectedMarca.id, this.formMarca).subscribe(() => {
-        console.log('Marca actualizada:', this.formMarca);
         this.loadMarcas();
-        this.cerrarFormularioMarca();
-        location.reload();
-
+        this.cerrarFormularioAgregarMarca();
+        this.mostrarFormularioMarca = true;
       });
     } else {
       this.apiService.createMarca(this.formMarca).subscribe(() => {
-        console.log('Marca creada:', this.formMarca);
         this.loadMarcas();
-        this.cerrarFormularioMarca();
-        location.reload();
+        this.cerrarFormularioAgregarMarca();
+        this.mostrarFormularioMarca = true;
       });
     }
+  }
+
+  editMarca(marca: any): void {
+    if (!marca || !marca.id) {
+      return;
+    }
+  
+    this.selectedMarca = marca;
+    this.formMarca = { ...marca };
+
+    this.selectedMarca = marca;
+
+    this.mostrarFormularioAgregarMarca = true;
+    this.mostrarFormularioMarca = false;
+  }
+
+  // Método para eliminar una marca
+  deleteMarca(id: number): void {
+    this.apiService.deleteMarca(id).subscribe(() => {
+      console.log('Marca eliminada:', id);
+      this.loadMarcas(); // Recargar marcas después de la eliminación
+    });
   }
 
   cancelEditMarca() {
     this.selectedMarca = null;
     this.formMarca = { nombre: '', tipos_marcas: this.formMarca.tipos_marcas };
-    this.mostrarFormularioMarca = false;
+    this.mostrarFormularioAgregarMarca = false;
+    this.mostrarFormularioMarca = true;
     document.body.style.overflow = 'auto';
   }
 

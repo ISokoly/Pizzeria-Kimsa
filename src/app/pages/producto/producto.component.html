@@ -54,7 +54,13 @@
       </div>
     </div>
     <div *ngIf="marcado">
-      <button class="create-btn" (click)="abrirFormularioMarca()">Añadir una Marca</button>
+      @if (marcas.length > 0) {
+        <button class="create-btn-marca" (click)="abrirFormularioMarca()">Añadir una Marca</button>
+      }
+      @else {
+        <button class="create-btn-marca" (click)="abrirFormularioAgregarMarca()">Añadir una Marca</button>
+      }
+
     </div>
     <button class="create-btn" (click)="abrirFormularioProducto()">Añadir un nuevo Producto</button>
   </div>
@@ -120,6 +126,36 @@
 
 <div *ngIf="marcado">
   <div *ngIf="mostrarFormularioMarca">
+    <div class="modal">
+      <div class="form-modal">
+        <h2 class="form-title">Marcas actuales</h2>
+  
+        <!-- Mostrar las marcas en una lista -->
+        <ul class="lista-caracteristicas">
+          <!-- Iteramos sobre las marcas usando marcaMap y mostramos su nombre -->
+          <li *ngFor="let marca of marcas" class="caracteristica-item">
+            <span><strong>{{ marca.nombre }}</strong></span>
+  
+            <!-- Acciones para editar o eliminar características -->
+            <mat-icon (click)="editMarca(marca)" class="icon-edit">edit</mat-icon>
+            <mat-icon (click)="deleteMarca(marca.id)" class="icon-x">cancel</mat-icon>
+          </li>
+        </ul>
+  
+        <!-- Botón para agregar nueva característica -->
+        <button type="button" class="form-btn-verde-caracter" (click)="abrirFormularioAgregarMarca()">
+          Agregar nueva característica
+        </button>
+  
+        <!-- Botón para cerrar el formulario -->
+        <button type="button" class="form-btn-gris-caracter" (click)="cerrarFormularioMarca()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="mostrarFormularioAgregarMarca">
 
     <div class="modal">
       <div class="form-modal">
@@ -185,7 +221,6 @@
 
 
 @else if (mostrarModalAgregarCaracteristica) {
-
 <div class="modal">
   <div class="form-modal">
     <h2 class="form-title">Agregar Característica</h2>

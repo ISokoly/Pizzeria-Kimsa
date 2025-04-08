@@ -1,12 +1,9 @@
 $color-primary: #a8d5ba;
-$color-secondary: #86c59d;
-$color-accent: #4b9b69;
 $color-hover: #3d8057;
 $color-danger: #e53e3e;
-$color-text: #2c3e2c;
 $color-border: #6ea989;
-$color-light: #f9f9f9;
 $color-bg: #f9f9f9;
+$color-verde: #0b6e4f;
 
 .products-container {
   padding: 2rem;
@@ -28,13 +25,32 @@ $color-bg: #f9f9f9;
 
 h1,
 h2 {
-  color: #0b6e4f;
-  border-bottom: 2px dashed #0b6e4f;
+  color: $color-verde;
+  border-bottom: 2px dashed $color-verde;
   padding-bottom: 8px;
   text-align: center;
 }
 
 // 🎨 Botón de Crear Categoría
+.create-btn-marca {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #FF6A00;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #C64F00;
+    transform: scale(1.05);
+  }
+}
+
 .create-btn {
   display: block;
   margin: 2rem auto;
@@ -42,14 +58,14 @@ h2 {
   font-size: 1rem;
   font-weight: bold;
   color: white;
-  background-color: $color-accent;
+  background-color: #007acc;
   border: none;
   border-radius: 0.375rem;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease-in-out;
 
   &:hover {
-    background-color: $color-hover;
+    background-color: #005fa3;
     transform: scale(1.05);
   }
 }
@@ -115,7 +131,7 @@ h2 {
   text-align: center;
   font-size: 22px;
   font-weight: bold;
-  color: #0b6e4f;
+  color: $color-verde;
   margin-bottom: 15px;
 }
 
@@ -147,7 +163,7 @@ h2 {
   /* Aumentamos el padding horizontal */
   font-size: 16px;
   border-radius: 6px;
-  border: 1.5px solid #0b6e4f;
+  border: 1.5px solid $color-verde;
   background-color: #f9fdf9;
   outline: none;
   transition: border 0.3s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -157,7 +173,7 @@ h2 {
 
 /* Efecto de enfoque */
 .form-input:focus {
-  border-color: #075c39;
+  border-color: $color-hover;
   box-shadow: 0 0 5px rgba(7, 92, 57, 0.3);
 }
 
@@ -167,7 +183,7 @@ h2 {
   left: 0;
   width: 100%;
   background: white;
-  border: 1px solid #0b6e4f;
+  border: 1px solid $color-verde;
   border-radius: 6px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 200px;
@@ -187,7 +203,7 @@ h2 {
   transition: background-color 0.3s ease-in-out;
 
   &:hover {
-    background-color: #a8d5ba;
+    background-color: $color-primary;
   }
 }
 
@@ -200,7 +216,7 @@ h2 {
 
 /* Botón Guardar */
 .form-btn-verde {
-  background: #0b6e4f;
+  background: $color-verde;
   color: white;
   padding: 10px 16px;
   border: none;
@@ -213,7 +229,7 @@ h2 {
 }
 
 .form-btn-verde:hover {
-  background: #075c39;
+  background: $color-hover;
 }
 
 /* Botón Cancelar */
@@ -253,7 +269,7 @@ h2 {
     border-radius: 0.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    border: 1px solid $color-border;
+    border: 2px solid $color-border;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     box-sizing: border-box;
 
@@ -266,11 +282,11 @@ h2 {
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      color: #0b6e4f;
+      color: $color-verde;
       transition: 0.3s;
 
       &:hover {
-        color: $color-accent;
+        color: $color-hover;
       }
     }
 
@@ -291,7 +307,7 @@ h2 {
       }
 
       .edit-btn {
-        background-color: $color-accent;
+        background-color: $color-verde;
         color: white;
 
         &:hover {
@@ -314,7 +330,7 @@ h2 {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #f3f3f3;
+      background-color: white;
       padding: 10px;
       border-radius: 20px;
       overflow: hidden;
@@ -374,7 +390,7 @@ h2 {
 }
 
 .submit-btn {
-  background-color: $color-accent;
+  background-color: $color-verde;
   color: white;
 
   &:hover {
@@ -452,7 +468,7 @@ h2 {
 }
 
 .form-btn-verde-caracter {
-  background: #0b6e4f;
+  background: $color-verde;
   color: white;
   padding: 10px 16px;
   border: none;
@@ -467,7 +483,7 @@ h2 {
 }
 
 .form-btn-verde:hover {
-  background: #075c39;
+  background: $color-hover;
 }
 
 /* Botón Cancelar */
