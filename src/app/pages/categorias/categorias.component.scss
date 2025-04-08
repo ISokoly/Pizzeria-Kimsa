@@ -223,14 +223,15 @@ h2 {
 
 // 📋 Lista de productos y categorías
 .categoria-container {
-  grid-column: span 4;
+  overflow: hidden;
 
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     justify-items: center;
-
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    margin: 0 auto;
   }
 
   .product-item {

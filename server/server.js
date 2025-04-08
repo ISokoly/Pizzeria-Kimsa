@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
 const multer = require('multer');
-const bcrypt = require('bcrypt'); // Para encriptar contraseñas
-const path = require('path'); // <-- Asegúrate de importar esto
+const bcrypt = require('bcrypt');
+const path = require('path');
 const fs = require('fs'); 
 const sharp = require('sharp');
 
@@ -128,6 +128,9 @@ app.use('/api', tiposMarcaRoutes);
 app.use('/api', caracteristicaProductosRoutes);
 
 const tempPath = path.join(__dirname, 'uploads/temp');
+if (!fs.existsSync(tempPath)) {
+  fs.mkdirSync(tempPath, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
